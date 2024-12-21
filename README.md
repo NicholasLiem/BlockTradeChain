@@ -25,3 +25,26 @@ admin.addPeer("enodeInfohere")
 ```sh
 admin.peers
 ```
+
+## How to Deploy Your SC
+1. Install truffle
+```sh
+npm install -g truffle
+```
+
+2. Move to contract dir
+```sh
+cd contract
+```
+
+3. Compile your SC
+```sh
+truffle compile
+```
+
+4. Make a migration file in the migrations folder
+
+5. Deploy your SC
+```sh
+truffle deploy
+```
