@@ -1,1 +1,27 @@
 # Blockchain
+
+## How to add peer to the same network
+1. Open the ipc of each node
+```sh
+docker exec -it eth-node2 geth attach /root/data/geth.ipc
+```
+
+2. Check the version, make sure they are the same
+```sh
+net.version
+```
+
+3. Get either node's enode info
+```sh
+admin.nodeInfo.enode
+```
+
+4. Add peer to either, use container name instead of localhost/127.0.0.1
+```sh
+admin.addPeer("enodeInfohere")
+```
+
+5. Check if connected
+```sh
+admin.peers
+```
