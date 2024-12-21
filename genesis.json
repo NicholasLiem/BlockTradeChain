@@ -1,6 +1,6 @@
 {
 	"config": {
-		"chainId": 32382,
+		"chainId": 1234,
 		"homesteadBlock": 0,
 		"daoForkSupport": true,
 		"eip150Block": 0,
@@ -15,15 +15,13 @@
 		"londonBlock": 0,
 		"arrowGlacierBlock": 0,
 		"grayGlacierBlock": 0,
-		"shanghaiTime": 1695897038,
-		"cancunTime": 1695897038,
 		"terminalTotalDifficulty": 0,
 		"terminalTotalDifficultyPassed": true
 	},
 	"nonce": "0x0",
 	"timestamp": "0x651555ce",
 	"extraData": "0x0000000000000000000000000000000000000000000000000000000000000000bab2dd44c34eff228efb458fccf6192a54a279b60000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-	"gasLimit": "0x1c9c380",
+    "gasLimit": "8000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "0x0000000000000000000000000000000000000000",
