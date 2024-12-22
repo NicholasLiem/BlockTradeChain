@@ -6,15 +6,11 @@ services:
       - "8545:8545" # HTTP-RPC API port
       - "30303:30303" # Peer-to-peer communication port
       - "30303:30303/udp" # UDP discovery port
-    volumes:
-      - ./node1_data:/root/data
 
-  node2:
-    image: nicholasliem/block-trade-chain-geth:latest
-    container_name: eth-node2
-    ports:
-      - "8546:8545" # HTTP-RPC API port for node 2
-      - "30304:30303" # Peer-to-peer communication port for node 2
-      - "30304:30303/udp" # UDP discovery port for node 2
-    volumes:
-      - ./node2_data:/root/data
+  # node2:
+  #   image: nicholasliem/block-trade-chain-geth:latest
+  #   container_name: eth-node2
+  #   ports:
+  #     - "8546:8545" # HTTP-RPC API port for node 2
+  #     - "30304:30303" # Peer-to-peer communication port for node 2
+  #     - "30304:30303/udp" # UDP discovery port for node 2

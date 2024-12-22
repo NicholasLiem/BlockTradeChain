@@ -48,3 +48,21 @@ truffle compile
 ```sh
 truffle deploy
 ```
+
+## Utils
+1. Create new account
+```sh
+geth account new --datadir /root/.ethereum
+```
+
+2. Unlock account
+```sh
+geth --datadir /root/.ethereum \
+     --networkid 1234 \
+     --http \
+     --http.addr 0.0.0.0 \
+     --http.api eth,net,web3,admin \
+     --unlock 0xYourAccountAddress \
+     --password /password.txt \
+     --allow-insecure-unlock
+```
