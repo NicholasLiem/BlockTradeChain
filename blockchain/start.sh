@@ -7,6 +7,7 @@ geth --datadir ./blockchainData \
      --allow-insecure-unlock \
      --unlock "0x36f09de68ce7e1cac91222205de80529e39083b7" \
      --password ./password.txt \
+     --http.corsdomain "*" \
      --mine \
      --miner.threads=1 \
      --miner.etherbase=0x36f09de68ce7e1cac91222205de80529e39083b7 \
