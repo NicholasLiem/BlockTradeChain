@@ -1,0 +1,24 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 2parem;
+}
+
+.menu-container {
+  width: 25%;
+  height: 100%;
+}
+
+.page-container {
+  width: 75%;
+  height: 100%;
+  border-radius: 2rem;
+  background-color: whitesmoke;
+}
+
+
