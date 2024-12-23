@@ -58,12 +58,6 @@ module.exports = {
    */
 
   networks: {
-    dashboard: {
-      network_id: "*",
-      gas: 8000000,
-      gasPrice: 1000000000,
-      from: "0xbab2dD44c34EFf228eFB458fCCf6192A54a279B6"
-    },
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache, geth, or parity) in a separate terminal
@@ -102,16 +96,14 @@ module.exports = {
     //   network_id: 2111,   // This network is yours, in the cloud.
     //   production: true    // Treats this network as if it was a public net. (default: false)
     // }
-    private: {
-      host: "127.0.0.1",
-      port: 8545,
-      network_id: "1234",
-      gas: 8000000,
+    development: {
+      host: "127.0.0.1", // Replace with your Geth node's IP if needed
+      port: 8545,       // The port where your Geth node is listening
+      network_id: 4785, // Match the chainId in your genesis file
+      gas: 2000000,
       gasPrice: 1000000000,
-      timeoutBlocks: 200, // Increase the number of blocks to wait
-      deploymentPollingInterval: 5000, // Adjust polling interval to check transaction status
-      from: "0xbab2dD44c34EFf228eFB458fCCf6192A54a279B6"
-    }
+      from: "0x36f09de68ce7e1cac91222205de80529e39083b7"
+    },
   },
 
   // Set default mocha options here, use special reporters, etc.

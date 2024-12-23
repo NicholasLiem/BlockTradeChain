@@ -31,5 +31,4 @@ _data/
 
 *.tmp
 
-node1_data/
-node2_data/
+blockchainData/
