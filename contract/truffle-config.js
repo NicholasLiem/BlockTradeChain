@@ -97,11 +97,12 @@ module.exports = {
     //   production: true    // Treats this network as if it was a public net. (default: false)
     // }
     development: {
-      host: "127.0.0.1", // Replace with your Geth node's IP if needed
-      port: 8545,       // The port where your Geth node is listening
-      network_id: 4785, // Match the chainId in your genesis file
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: 4785,
       gas: 2000000,
       gasPrice: 1000000000,
+      // change this
       from: "0x36f09de68ce7e1cac91222205de80529e39083b7"
     },
   },
