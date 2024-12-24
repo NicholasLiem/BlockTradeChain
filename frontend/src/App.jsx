@@ -45,7 +45,6 @@ function AppContent() {
             <Route path="/export" element={<ExportPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Flex>
