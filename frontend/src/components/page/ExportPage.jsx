@@ -1,11 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading.jsx';
 import InformationCard from '../widget/InformationCard.jsx';
 import ExportTable from '../widget/ExportTable.jsx';
 import AddNewButton from '../widget/AddNewButton.jsx';
+import isSessionValid from '../../util/isSessionValid.js';
+import { useNavigate } from 'react-router-dom';
 
 const ExportPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSessionValid()) {
+      navigate('/login');
+    }
+  }, [navigate]); 
+
   const items = [
     {
       id: 1,

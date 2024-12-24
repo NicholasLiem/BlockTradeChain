@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import RadioCard from '../widget/RadioCard';
 import HistoryTable from '../widget/HistoryTable';
-
+import isSessionValid from '../../util/isSessionValid';
+import { useNavigate } from 'react-router-dom';
 
 const HistoryPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSessionValid()) {
+      navigate('/login');
+    }
+  }, [navigate]); 
+
   const items = [
     {
       id: 1,

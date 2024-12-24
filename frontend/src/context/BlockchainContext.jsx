@@ -26,7 +26,7 @@ export const BlockchainProvider = ({ children }) => {
         }
         initialize();
     }, []);
-    console.log(accounts)
+    // console.log(accounts)
 
     return (
         <BlockchainContext.Provider value={{ web3, supplyChainContract, accounts, isReady }}>

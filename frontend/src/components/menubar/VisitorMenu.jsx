@@ -12,7 +12,6 @@ const VisitorMenu = () => {
                 <Image src='logo.png' fit='contain' w='20%'/>
                 <Image src='logo-text.png' fit='contain' w='75%'/>
             </Flex>
-            <Button colorPalette='blue' mt={'2rem'}>Login</Button>
         </Flex>
     </>
   );

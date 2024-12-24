@@ -1,39 +1,76 @@
-import React from 'react';
-import { Flex } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 import PageHeading from '../widget/PageHeading';
-import InformationCard from '../widget/InformationCard';
+import { Button, Fieldset, Flex, Input, Stack } from "@chakra-ui/react"
+import { Field } from "@/components/ui/field"
+import { useBlockchain } from '../../context/BlockchainContext';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import isSessionValid from '../../util/isSessionValid';
 
 const LoginPage = () => {
-  const items = [
-    { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-    { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-    { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-    { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-    { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 6, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 7, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 8, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 9, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 10, name: "Headphones", category: "Accessories", price: 199.99 },
-  ]
+    const { accounts } = useBlockchain(); 
+    const navigate = useNavigate(); 
+    const [walletId, setWalletId] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-  return (
-    <>
-      <PageHeading text={'Empo'}/>
-      <Flex mt={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <InformationCard value='23.59' title='Clock' description='Current Time (GMT+7)'/>
-        <InformationCard value='1' title='Transactions' description='Total transactions'/>
-      </Flex>
-      <Flex mt={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <InformationCard value='1' title='Ready' description='Goods arrived to be imported'/>
-        <InformationCard value='30' title='Imported' description='Confirmed Imported Goods'/>
-      </Flex>
-      <Flex mt={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <InformationCard value='1' title='Departed' description='Goods exported'/>
-        <InformationCard value='30' title='Confirmed' description='Successful transaction'/>
-      </Flex>
-    </>
-  );
+    useEffect(() => {
+        if (isSessionValid()) {
+        navigate('/');
+        }
+    }, [navigate]); 
+
+    const handleLoginClick = async () => {
+        const account = accounts.find(acc => acc === walletId);
+        
+        // TO CHANGE PASSWORD
+        if (account && password === 'password') {
+            Cookies.set('walletId', walletId);
+            Cookies.set('password', password);  
+            
+            navigate('/');
+        } else {
+            setError('Invalid Wallet ID or Password');
+        }
+    };
+
+    return (
+        <>
+            <Flex width={'100%'} height={'100%'} direction={'column'} align={'start'} justify={'center'}>
+                <PageHeading text={'Empowering Trust, Transforming Trade'} />
+                <Fieldset.Root size="lg" maxW="md" color={'black'} mt={'3%'}>
+                    <Stack align={'start'}>
+                        <Fieldset.HelperText color={error ? 'red.500' : 'black'}>
+                            {error ? error : "Please provide your details below."}
+                        </Fieldset.HelperText>
+                    </Stack>
+
+                    <Fieldset.Content>
+                        <Field label="Wallet ID">
+                            <Input
+                                name="walletid"
+                                value={walletId}
+                                onChange={(e) => setWalletId(e.target.value)}
+                            />
+                        </Field>
+
+                        <Field label="Password">
+                            <Input
+                                name="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </Field>
+                    </Fieldset.Content>
+
+                    <Button type="button" alignSelf="flex-start" colorPalette={'blue'} onClick={handleLoginClick}>
+                        Login
+                    </Button>
+                </Fieldset.Root>
+            </Flex>
+        </>
+    );
 };
 
 export default LoginPage;

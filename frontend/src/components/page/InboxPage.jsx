@@ -1,10 +1,20 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import ImportTable from '../widget/ImportTable';
+import isSessionValid from '../../util/isSessionValid';
+import { useNavigate } from 'react-router-dom';
 
 const InboxPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSessionValid()) {
+      navigate('/login');
+    }
+  }, [navigate]); 
+
   const items = [
     {
       id: 1,

@@ -1,21 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
+import isSessionValid from '../../util/isSessionValid';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-  const items = [
-    { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-    { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-    { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-    { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-    { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 6, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 7, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 8, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 9, name: "Headphones", category: "Accessories", price: 199.99 },
-    { id: 10, name: "Headphones", category: "Accessories", price: 199.99 },
-  ]
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isSessionValid()) {
+      navigate('/login');
+    }
+  }, [navigate]); 
 
   return (
     <>
