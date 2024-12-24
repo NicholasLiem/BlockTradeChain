@@ -1,7 +1,7 @@
 import React from 'react';
 import { useBlockchain } from '../context/BlockchainContext';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
     const { accounts, supplyChainContract, isReady } = useBlockchain();
 
     if (!isReady) return <p>Loading blockchain connection...</p>;

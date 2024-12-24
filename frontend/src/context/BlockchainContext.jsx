@@ -5,13 +5,13 @@ import { web3, supplyChainContract } from '../web3';
 const BlockchainContext = createContext({
     web3,
     supplyChainContract,
-    accounts: [] as string[],
+    accounts: [],
     isReady: false,
 });
 
 // Blockchain Provider
-export const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [accounts, setAccounts] = useState<string[]>([]);
+export const BlockchainProvider = ({ children }) => {
+    const [accounts, setAccounts] = useState([]);
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
@@ -26,6 +26,7 @@ export const BlockchainProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
         initialize();
     }, []);
+    console.log(accounts)
 
     return (
         <BlockchainContext.Provider value={{ web3, supplyChainContract, accounts, isReady }}>

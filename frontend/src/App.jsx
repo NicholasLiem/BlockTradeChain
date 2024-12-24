@@ -9,6 +9,8 @@ import InboxPage from './components/page/InboxPage'
 import ExportPage from './components/page/ExportPage'
 import HistoryPage from './components/page/HistoryPage'
 import SettingsPage from './components/page/SettingsPage'
+import Dashboard from './components/Dashboard'
+import LoginPage from './components/page/LoginPage'
 
 function App() {
 
@@ -28,6 +30,8 @@ function App() {
                 <Route path="/export" element={<ExportPage />} />
                 <Route path="/history" element={<HistoryPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/login" element={<LoginPage />} />
               </Routes>
             </Flex>
           </Center>
