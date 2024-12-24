@@ -2,7 +2,7 @@
 
 DATA_DIR="./blockchainData"
 
-ETHERBASE=$(geth --datadir "$DATA_DIR" account list | head -n 1 | awk -F '[{}]' '{print $2}')
+ETHERBASE=377bbc1708092aef2542eb9d8ac4bb9eaf4242bc
 
 if [ -z "$ETHERBASE" ]; then
   echo "Error: No accounts found. Please create an account before starting the miner."
@@ -26,4 +26,6 @@ geth --datadir $DATA_DIR \
      --mine \
      --miner.threads=1 \
      --miner.etherbase="$ETHERBASE" \
+     --unlock "0x$ETHERBASE" \
+     --password "./password.txt" \
      --preload "startmine.js"
