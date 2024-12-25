@@ -31,7 +31,7 @@ var (
 
 // SupplychainMetaData contains all meta data concerning the Supplychain contract.
 var SupplychainMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"name\":\"ItemAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"}],\"name\":\"StatusUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"items\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"oracle\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"setOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"name\":\"addItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"}],\"name\":\"updateStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"}],\"name\":\"getItem\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"name\":\"ItemAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"}],\"name\":\"StatusUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TimeUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"items\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"lastUpdatedTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"oracle\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"setOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"}],\"name\":\"addItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"}],\"name\":\"updateStatus\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"itemId\",\"type\":\"uint256\"}],\"name\":\"getItem\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_time\",\"type\":\"uint256\"}],\"name\":\"updateTime\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]",
 }
 
 // SupplychainABI is the input ABI used to generate the binding from.
@@ -212,6 +212,37 @@ func (_Supplychain *SupplychainCallerSession) GetItem(itemId *big.Int) (string, 
 	return _Supplychain.Contract.GetItem(&_Supplychain.CallOpts, itemId)
 }
 
+// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
+//
+// Solidity: function getTime() view returns(uint256)
+func (_Supplychain *SupplychainCaller) GetTime(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "getTime")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
+//
+// Solidity: function getTime() view returns(uint256)
+func (_Supplychain *SupplychainSession) GetTime() (*big.Int, error) {
+	return _Supplychain.Contract.GetTime(&_Supplychain.CallOpts)
+}
+
+// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
+//
+// Solidity: function getTime() view returns(uint256)
+func (_Supplychain *SupplychainCallerSession) GetTime() (*big.Int, error) {
+	return _Supplychain.Contract.GetTime(&_Supplychain.CallOpts)
+}
+
 // Items is a free data retrieval call binding the contract method 0xbfb231d2.
 //
 // Solidity: function items(uint256 ) view returns(string name, string status)
@@ -255,6 +286,37 @@ func (_Supplychain *SupplychainCallerSession) Items(arg0 *big.Int) (struct {
 	Status string
 }, error) {
 	return _Supplychain.Contract.Items(&_Supplychain.CallOpts, arg0)
+}
+
+// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
+//
+// Solidity: function lastUpdatedTime() view returns(uint256)
+func (_Supplychain *SupplychainCaller) LastUpdatedTime(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "lastUpdatedTime")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
+//
+// Solidity: function lastUpdatedTime() view returns(uint256)
+func (_Supplychain *SupplychainSession) LastUpdatedTime() (*big.Int, error) {
+	return _Supplychain.Contract.LastUpdatedTime(&_Supplychain.CallOpts)
+}
+
+// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
+//
+// Solidity: function lastUpdatedTime() view returns(uint256)
+func (_Supplychain *SupplychainCallerSession) LastUpdatedTime() (*big.Int, error) {
+	return _Supplychain.Contract.LastUpdatedTime(&_Supplychain.CallOpts)
 }
 
 // Oracle is a free data retrieval call binding the contract method 0x7dc0d1d0.
@@ -349,6 +411,27 @@ func (_Supplychain *SupplychainSession) UpdateStatus(itemId *big.Int, newStatus 
 // Solidity: function updateStatus(uint256 itemId, string newStatus) returns()
 func (_Supplychain *SupplychainTransactorSession) UpdateStatus(itemId *big.Int, newStatus string) (*types.Transaction, error) {
 	return _Supplychain.Contract.UpdateStatus(&_Supplychain.TransactOpts, itemId, newStatus)
+}
+
+// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+//
+// Solidity: function updateTime(uint256 _time) returns()
+func (_Supplychain *SupplychainTransactor) UpdateTime(opts *bind.TransactOpts, _time *big.Int) (*types.Transaction, error) {
+	return _Supplychain.contract.Transact(opts, "updateTime", _time)
+}
+
+// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+//
+// Solidity: function updateTime(uint256 _time) returns()
+func (_Supplychain *SupplychainSession) UpdateTime(_time *big.Int) (*types.Transaction, error) {
+	return _Supplychain.Contract.UpdateTime(&_Supplychain.TransactOpts, _time)
+}
+
+// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+//
+// Solidity: function updateTime(uint256 _time) returns()
+func (_Supplychain *SupplychainTransactorSession) UpdateTime(_time *big.Int) (*types.Transaction, error) {
+	return _Supplychain.Contract.UpdateTime(&_Supplychain.TransactOpts, _time)
 }
 
 // SupplychainItemAddedIterator is returned from FilterItemAdded and is used to iterate over the raw logs and unpacked data for ItemAdded events raised by the Supplychain contract.
@@ -616,6 +699,140 @@ func (_Supplychain *SupplychainFilterer) WatchStatusUpdated(opts *bind.WatchOpts
 func (_Supplychain *SupplychainFilterer) ParseStatusUpdated(log types.Log) (*SupplychainStatusUpdated, error) {
 	event := new(SupplychainStatusUpdated)
 	if err := _Supplychain.contract.UnpackLog(event, "StatusUpdated", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// SupplychainTimeUpdatedIterator is returned from FilterTimeUpdated and is used to iterate over the raw logs and unpacked data for TimeUpdated events raised by the Supplychain contract.
+type SupplychainTimeUpdatedIterator struct {
+	Event *SupplychainTimeUpdated // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *SupplychainTimeUpdatedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(SupplychainTimeUpdated)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(SupplychainTimeUpdated)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *SupplychainTimeUpdatedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *SupplychainTimeUpdatedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// SupplychainTimeUpdated represents a TimeUpdated event raised by the Supplychain contract.
+type SupplychainTimeUpdated struct {
+	Timestamp *big.Int
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterTimeUpdated is a free log retrieval operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
+//
+// Solidity: event TimeUpdated(uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) FilterTimeUpdated(opts *bind.FilterOpts) (*SupplychainTimeUpdatedIterator, error) {
+
+	logs, sub, err := _Supplychain.contract.FilterLogs(opts, "TimeUpdated")
+	if err != nil {
+		return nil, err
+	}
+	return &SupplychainTimeUpdatedIterator{contract: _Supplychain.contract, event: "TimeUpdated", logs: logs, sub: sub}, nil
+}
+
+// WatchTimeUpdated is a free log subscription operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
+//
+// Solidity: event TimeUpdated(uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) WatchTimeUpdated(opts *bind.WatchOpts, sink chan<- *SupplychainTimeUpdated) (event.Subscription, error) {
+
+	logs, sub, err := _Supplychain.contract.WatchLogs(opts, "TimeUpdated")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(SupplychainTimeUpdated)
+				if err := _Supplychain.contract.UnpackLog(event, "TimeUpdated", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseTimeUpdated is a log parse operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
+//
+// Solidity: event TimeUpdated(uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) ParseTimeUpdated(log types.Log) (*SupplychainTimeUpdated, error) {
+	event := new(SupplychainTimeUpdated)
+	if err := _Supplychain.contract.UnpackLog(event, "TimeUpdated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

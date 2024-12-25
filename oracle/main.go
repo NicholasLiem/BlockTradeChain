@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+    handlers "github.com/NicholasLiem/Blockchain/handlers"
 )
 
 func main() {
@@ -14,20 +15,13 @@ func main() {
         log.Fatalf("Error loading .env file: %v", err)
     }
 
+    supplyChain, auth, client, err := InitializeChain()
+	if err != nil {
+		log.Fatalf("Failed to initialize blockchain: %v", err)
+	}
+	defer client.Close()
+
     r := gin.Default()
-
-    r.GET("/fetch", func(c *gin.Context) {
-        data, err := fetchExternalData()
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
-
-        c.JSON(http.StatusOK, gin.H{
-            "message": "Data fetched successfully",
-            "data":    data,
-        })
-    })
 
     r.POST("/updateStatus", func(c *gin.Context) {
         type RequestPayload struct {
@@ -56,5 +50,7 @@ func main() {
         })
     })
 
+    r.PUT("/updateTime", handlers.UpdateTimeHandler(supplyChain, auth))
+	
     r.Run(":8080")
 }

@@ -21,10 +21,12 @@ const LoginPage = () => {
     }, [navigate]); 
 
     const handleLoginClick = async () => {
-        const account = accounts.find(acc => acc === walletId);
+        const accountExists = accounts?.includes(walletId);
+
+        console.log("accounts", accounts)
         
         // TO CHANGE PASSWORD
-        if (account && password === 'password') {
+        if (accountExists && password === 'password') {
             Cookies.set('walletId', walletId);
             Cookies.set('password', password);  
             

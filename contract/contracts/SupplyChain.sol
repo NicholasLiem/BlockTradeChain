@@ -8,10 +8,12 @@ contract SupplyChain {
     }
 
     address public oracle;
+    uint256 public lastUpdatedTime;
 
     // set the deployer of the contract as the oracle
     constructor() {
         oracle = msg.sender;
+        lastUpdatedTime = block.timestamp;
     }
 
     modifier onlyOracle() {
@@ -28,6 +30,7 @@ contract SupplyChain {
 
     event ItemAdded(uint256 itemId, string name, string status);
     event StatusUpdated(uint256 itemId, string newStatus);
+    event TimeUpdated(uint256 timestamp);
 
     function addItem(uint256 itemId, string memory name, string memory status) public {
         items[itemId] = Item(name, status);
@@ -44,5 +47,14 @@ contract SupplyChain {
         require(bytes(items[itemId].name).length > 0, "Item does not exist");
         Item memory item = items[itemId];
         return (item.name, item.status);
+    }
+
+    function updateTime(uint256 _time) public onlyOracle {
+        lastUpdatedTime = _time;
+        emit TimeUpdated(_time);
+    }
+
+    function getTime() public view returns (uint256) {
+        return lastUpdatedTime;
     }
 }

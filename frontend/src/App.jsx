@@ -10,7 +10,6 @@ import InboxPage from './components/page/InboxPage'
 import ExportPage from './components/page/ExportPage'
 import HistoryPage from './components/page/HistoryPage'
 import SettingsPage from './components/page/SettingsPage'
-import Dashboard from './components/Dashboard'
 import LoginPage from './components/page/LoginPage'
 import isSessionValid from './util/isSessionValid'
 

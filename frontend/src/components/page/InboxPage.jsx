@@ -1,19 +1,34 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import ImportTable from '../widget/ImportTable';
+import { getTime } from '../../contracts/contracts';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
 
 const InboxPage = () => {
   const navigate = useNavigate();
+  const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
     if (!isSessionValid()) {
       navigate('/login');
     }
-  }, [navigate]); 
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchTime = async () => {
+      try {
+        const time = await getTime();
+        setCurrentTime(time);
+      } catch (error) {
+        console.error('Error fetching time:', error);
+      }
+    };
+
+    fetchTime();
+  }, []);
 
   const items = [
     {
@@ -100,13 +115,13 @@ const InboxPage = () => {
 
   return (
     <>
-      <PageHeading text={'Inbox'}/>
+      <PageHeading text={'Inbox'} />
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <InformationCard value='23.59' title='Clock' description='Current Time (GMT+7)'/>
-        <InformationCard value='1' title='Ready' description='Goods arrived to be imported'/>
-        <InformationCard value='30' title='Imported' description='Confirmed Imported Goods'/>
+        <InformationCard value={currentTime} title='Clock' description='Current Time (GMT+7)' />
+        <InformationCard value='1' title='Ready' description='Goods arrived to be imported' />
+        <InformationCard value='30' title='Imported' description='Confirmed Imported Goods' />
       </Flex>
-      <ImportTable data={items}/>
+      <ImportTable data={items} />
     </>
   );
 };
