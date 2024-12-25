@@ -2,7 +2,6 @@ package main
 
 import (
     "encoding/json"
-    "net/http"
 )
 
 type ApiResponse struct {
@@ -11,15 +10,13 @@ type ApiResponse struct {
 }
 
 func fetchExternalData() (*ApiResponse, error) {
-    url := "https://api.example.com/status"
-    resp, err := http.Get(url)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
+    mockData := `{
+        "item_id": 1,
+        "status": "Delivered"
+    }`
 
     var data ApiResponse
-    if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+    if err := json.Unmarshal([]byte(mockData), &data); err != nil {
         return nil, err
     }
 

@@ -7,6 +7,23 @@ contract SupplyChain {
         string status;
     }
 
+    address public oracle;
+
+    // set the deployer of the contract as the oracle
+    constructor() {
+        oracle = msg.sender;
+    }
+
+    modifier onlyOracle() {
+        require(msg.sender == oracle, "Not authorized");
+        _;
+    }
+
+    function setOracle(address _oracle) public {
+        require(msg.sender == oracle, "Only the current oracle can assign a new oracle");
+        oracle = _oracle;
+    }
+
     mapping(uint256 => Item) public items;
 
     event ItemAdded(uint256 itemId, string name, string status);
