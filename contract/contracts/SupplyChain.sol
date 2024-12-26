@@ -1,20 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract SupplyChain {
+import "./DerivedWallet.sol";
+import "./WalletManager.sol";
+
+contract SupplyChain is DerivedWallet, WalletManager {
     struct Item {
         string product;
         uint256 qty;
         uint256 value;
         address exporter;
-        address recipient;
+        address recipient; // Original Ethereum wallet
         string status; // EXPORTED, IMPORTED, CANCELLED
         uint256[] statusTimestamps;
     }
 
     mapping(bytes32 => Item) private items; // transactionHash => Item
-    mapping(bytes32 => address) private itemAccess; // transactionHash => recipient (for privacy)
-
     address public oracle;
     uint256 public lastUpdatedTime;
     bytes32[] public transactionHashes;
@@ -23,7 +24,6 @@ contract SupplyChain {
     event StatusUpdated(bytes32 indexed transactionHash, string newStatus, uint256 timestamp);
     event TimeUpdated(uint256 timestamp);
 
-    // set the deployer of the contract as the oracle
     constructor() {
         oracle = msg.sender;
         lastUpdatedTime = block.timestamp;
@@ -34,8 +34,7 @@ contract SupplyChain {
         _;
     }
 
-    function setOracle(address _oracle) public {
-        require(msg.sender == oracle, "Only the current oracle can assign a new oracle");
+    function setOracle(address _oracle) public onlyOracle {
         oracle = _oracle;
     }
 
@@ -47,14 +46,13 @@ contract SupplyChain {
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
-        // Generate a unique transaction hash
         bytes32 transactionHash = keccak256(
             abi.encodePacked(msg.sender, recipient, block.timestamp, product, qty, value)
         );
-        
-        // Initialize the item and add the first timestamp after creating the struct
+
+        require(items[transactionHash].exporter == address(0), "Item already exists");
+
         Item storage newItem = items[transactionHash];
-        require(newItem.exporter == address(0), "Item already exists");
         newItem.product = product;
         newItem.qty = qty;
         newItem.value = value;
@@ -63,10 +61,9 @@ contract SupplyChain {
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
 
-        // Store the recipient for privacy
-        itemAccess[transactionHash] = recipient;
+        bytes32 derivedWallet = deriveWallet(recipient);
+        addToInbox(derivedWallet, transactionHash);
 
-        // Add the transaction hash to the list of all transaction hashes
         transactionHashes.push(transactionHash);
 
         emit ItemExported(transactionHash, msg.sender, recipient);
@@ -76,23 +73,19 @@ contract SupplyChain {
     function confirmItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
         require(item.recipient == msg.sender, "Only the recipient can confirm this item");
-        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
+        require(
+            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
+            "Item is not in EXPORTED status"
+        );
 
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
 
+        bytes32 derivedWallet = deriveWallet(msg.sender);
+        removeFromInbox(derivedWallet, transactionHash);
+        addToAsset(derivedWallet, transactionHash);
+
         emit StatusUpdated(transactionHash, "IMPORTED", block.timestamp);
-    }
-
-    function denyItem(bytes32 transactionHash) public {
-        Item storage item = items[transactionHash];
-        require(item.recipient == msg.sender, "Only the recipient can deny this item");
-        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
-
-        item.status = "CANCELLED";
-        item.statusTimestamps.push(block.timestamp);
-
-        emit StatusUpdated(transactionHash, "CANCELLED", block.timestamp);
     }
 
     function getItemDetails(bytes32 transactionHash) public view returns (Item memory) {
@@ -100,28 +93,8 @@ contract SupplyChain {
         require(item.exporter != address(0), "Item does not exist");
         require(
             msg.sender == item.exporter || msg.sender == item.recipient,
-            string(
-                abi.encodePacked("Not authorized to view this item's details")
-            )
+            "Not authorized to view this item's details"
         );
         return item;
-    }
-
-    function getStatusLog(bytes32 transactionHash) public view returns (uint256[] memory) {
-        Item memory item = items[transactionHash];
-        require(
-            msg.sender == item.exporter || msg.sender == item.recipient,
-            "Not authorized to view this item's status log"
-        );
-        return item.statusTimestamps;
-    }
-
-    function updateTime(uint256 _time) public onlyOracle {
-        lastUpdatedTime = _time;
-        emit TimeUpdated(_time);
-    }
-
-    function getTime() public view returns (uint256) {
-        return lastUpdatedTime;
     }
 }
