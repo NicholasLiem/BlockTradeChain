@@ -7,46 +7,46 @@ import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
 import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
+import Cookies from 'js-cookie';
+import { useAuth } from '../../context/AuthContext';
 
 const ExportPage = () => {
+  const { walletId, requireDerivedWallet, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-        var status = await isSessionValid()
-        if (!status) {
-            navigate('/login');
-        }
-    };
-
-    checkSession();
-    const init = async () => {
+    const initializePage = async () => {
       try {
-        await fetchExportData();
+        // Check session validity
+        const status = await isSessionValid();
+        if (!status) {
+          navigate('/login');
+          return;
+        }
 
-        console.log("Fetching item details for debugging...");
+        // Fetch data
+        await fetchExportData();
+        console.log("Initialization complete.");
       } catch (error) {
         console.error("Error during initialization:", error);
       }
     };
 
-    init();
+    initializePage();
   }, [navigate]);
 
   const fetchExportData = async () => {
     setIsLoading(true);
     try {
-      const account_active = await window.ethereum.request({ method: 'eth_accounts' });
-      const account = account_active[0]
-      console.log(account_active);
+      const account = Cookies.get("walletId");
       if (!account) throw new Error("Wallet ID is not set");
-  
+
       // Fetch transaction hashes for the user
       const exportedItems = await getUserTransactions(account);
       console.log("Exported items:", exportedItems);
-  
+
       // Fetch full details for each transaction hash
       const detailedItems = await Promise.all(
         exportedItems.map(async (item) => {
@@ -62,12 +62,14 @@ const ExportPage = () => {
               : "N/A",
             confirmedtime:
               details.status === "IMPORTED" && details.statusTimestamps?.length > 1
-                ? new Date(Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000).toLocaleString()
+                ? new Date(
+                    Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000
+                  ).toLocaleString()
                 : "",
           };
         })
       );
-  
+
       setItems(detailedItems);
     } catch (error) {
       console.error("Error fetching export data:", error);
@@ -78,7 +80,7 @@ const ExportPage = () => {
 
   const handleNewExport = async (product, qty, value, recipient) => {
     try {
-      const account = await window.ethereum.request({ method: 'eth_accounts' })[0];
+      const account = Cookies.get("walletId");
       const transactionHash = await exportItem(product, qty, value, recipient, account);
       console.log("Exported item transaction hash:", transactionHash);
       fetchExportData();

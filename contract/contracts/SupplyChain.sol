@@ -95,4 +95,13 @@ contract SupplyChain is DerivedWallet {
         );
         return item;
     }
+
+    function updateTime() public onlyOracle {
+        lastUpdatedTime = block.timestamp;
+        emit TimeUpdated(block.timestamp);
+    }
+
+    function getTime() public view returns (uint256) {
+        return lastUpdatedTime;
+    }
 }

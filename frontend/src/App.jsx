@@ -16,9 +16,7 @@ import isSessionValid from './util/isSessionValid'
 function App() {
   return (
     <Provider>
-      <Router>
-        <AppContent />
-      </Router>
+      <AppContent />
     </Provider>
   );
 }

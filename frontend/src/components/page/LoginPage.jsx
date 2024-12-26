@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import isSessionValid from '../../util/isSessionValid';
 
 const LoginPage = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const [walletId, setWalletId] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -19,30 +19,30 @@ const LoginPage = () => {
                 navigate('/');
             }
         };
-    
+
         checkSession();
-    }, [navigate]); 
+    }, [navigate]);
 
     const handleLoginClick = async () => {
         try {
-          handleMetamask()
-          const newAccount = web3.eth.accounts.create();
+            handleMetamask()
+            //   const newAccount = web3.eth.accounts.create();
 
-        console.log('New Account Address:', newAccount.address);
-        console.log('New Account Private Key:', newAccount.privateKey);
-          await web3.eth.personal.unlockAccount(walletId, password, 5);
-          Cookies.set('walletId', walletId);
-          Cookies.set('password', password);
-         
-          if (window.ethereum) {
+            // // console.log('New Account Address:', newAccount.address);
+            // // console.log('New Account Private Key:', newAccount.privateKey);
+            await web3.eth.personal.unlockAccount(walletId, password, 5);
+            Cookies.set('walletId', walletId);
+            Cookies.set('password', password);
+
+            if (window.ethereum) {
                 try {
                     await window.ethereum.request({
                         method: 'wallet_watchAsset',
                         params: {
-                            type: 'ERC20', 
+                            type: 'ERC20',
                             options: {
-                                address: walletId, 
-                                symbol: 'TRC', 
+                                address: walletId,
+                                symbol: 'TRC',
                                 decimals: 18,
                             },
                         },
@@ -51,9 +51,9 @@ const LoginPage = () => {
                     setError('Failed to add the token to Metamask. Please try again.');
                 }
             }
-          navigate('/');
+            navigate('/');
         } catch (err) {
-          setError(`Invalid Wallet ID or Password`);
+            setError(`Invalid Wallet ID or Password`);
         }
     };
 
@@ -61,17 +61,17 @@ const LoginPage = () => {
         if (window.ethereum) {
             try {
                 await window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                    chainId: '0x12B1',
-                    chainName: 'BlockTrade Chain',
-                    nativeCurrency: {
-                        name: 'Trade Coins',
-                        symbol: 'TRC', 
-                        decimals: 18,
-                    },
-                    rpcUrls: [import.meta.env.VITE_RPC_URL || 'http://127.0.0.1:8545'],
-                }],
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x12B1',
+                        chainName: 'BlockTrade Chain',
+                        nativeCurrency: {
+                            name: 'Trade Coins',
+                            symbol: 'TRC',
+                            decimals: 18,
+                        },
+                        rpcUrls: [import.meta.env.VITE_RPC_URL || 'http://127.0.0.1:8545'],
+                    }],
                 });
                 console.log('Network added successfully!');
             } catch (error) {

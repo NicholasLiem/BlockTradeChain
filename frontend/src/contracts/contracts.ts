@@ -1,5 +1,6 @@
 import { supplyChainContract, web3 } from '../web3';
 import type { EventLog } from 'web3';
+import Cookies from 'js-cookie';
 
 export async function exportItem(
     product: string,
@@ -8,9 +9,16 @@ export async function exportItem(
     recipient: string,
     account: string
   ): Promise<string> {
+    const derivedWallet = Cookies.get('derivedWallet');
+    if (!derivedWallet) {
+      throw new Error("No derived wallet found in cookies");
+    }
+
+    console.log("Exporting item:", { product, qty, value, recipient, account, derivedWallet });
+
     const gasPrice = (await web3.eth.getGasPrice()).toString();
     const txReceipt = await supplyChainContract.methods
-      .exportItem(product, qty, value, recipient)
+      .exportItem(product, qty, value, recipient, derivedWallet)
       .send({ from: account, gasPrice });
   
     const itemExportedEvent = txReceipt.events?.ItemExported;
