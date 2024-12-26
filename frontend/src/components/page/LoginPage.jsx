@@ -4,6 +4,7 @@ import { Button, Fieldset, Flex, Input, Stack } from "@chakra-ui/react"
 import { Field } from "@/components/ui/field"
 import { useBlockchain } from '../../context/BlockchainContext';
 import { useNavigate } from 'react-router-dom';
+import { web3 } from '../../web3';
 import Cookies from 'js-cookie';
 import isSessionValid from '../../util/isSessionValid';
 
@@ -21,20 +22,17 @@ const LoginPage = () => {
     }, [navigate]); 
 
     const handleLoginClick = async () => {
-        const accountExists = accounts?.includes(walletId);
-
-        console.log("accounts", accounts)
-        
-        // TO CHANGE PASSWORD
-        if (accountExists && password === 'password') {
-            Cookies.set('walletId', walletId);
-            Cookies.set('password', password);  
-            
-            navigate('/');
-        } else {
-            setError('Invalid Wallet ID or Password');
+        try {
+          await web3.eth.personal.unlockAccount(walletId, password, 600);
+          
+          Cookies.set('walletId', walletId);
+          Cookies.set('password', password);
+          navigate('/');
+        } catch (err) {
+          console.error("Unlock failed:", err);
+          setError(`Invalid Wallet ID or Password: ${err.message}`);
         }
-    };
+      };
 
     return (
         <>
