@@ -101,14 +101,7 @@ contract SupplyChain {
         require(
             msg.sender == item.exporter || msg.sender == item.recipient,
             string(
-                abi.encodePacked(
-                    "Not authorized to view this item's details: msg.sender=",
-                    toAsciiString(msg.sender),
-                    ", exporter=",
-                    toAsciiString(item.exporter),
-                    ", recipient=",
-                    toAsciiString(item.recipient)
-                )
+                abi.encodePacked("Not authorized to view this item's details")
             )
         );
         return item;
@@ -121,63 +114,6 @@ contract SupplyChain {
             "Not authorized to view this item's status log"
         );
         return item.statusTimestamps;
-    }
-
-    function toAsciiString(address x) internal pure returns (string memory) {
-        bytes memory s = new bytes(40);
-        for (uint256 i = 0; i < 20; i++) {
-            bytes1 b = bytes1(uint8(uint256(uint160(x)) / (2**(8 * (19 - i)))));
-            bytes1 hi = bytes1(uint8(b) / 16);
-            bytes1 lo = bytes1(uint8(b) - 16 * uint8(hi));
-            s[2 * i] = char(hi);
-            s[2 * i + 1] = char(lo);
-        }
-        return string(s);
-    }
-
-    function char(bytes1 b) internal pure returns (bytes1 c) {
-        if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
-        else return bytes1(uint8(b) + 0x57);
-    }
-
-    function getDebugDetails(bytes32 transactionHash) public view returns (address, address) {
-        Item memory item = items[transactionHash];
-        return (item.exporter, item.recipient);
-    }
-
-    function getAllItems() public view returns (
-        bytes32[] memory,
-        string[] memory,
-        uint256[] memory,
-        uint256[] memory,
-        address[] memory,
-        address[] memory,
-        string[] memory
-    ) {
-        uint256 itemCount = transactionHashes.length;
-
-        bytes32[] memory hashes = new bytes32[](itemCount);
-        string[] memory products = new string[](itemCount);
-        uint256[] memory quantities = new uint256[](itemCount);
-        uint256[] memory values = new uint256[](itemCount);
-        address[] memory exporters = new address[](itemCount);
-        address[] memory recipients = new address[](itemCount);
-        string[] memory statuses = new string[](itemCount);
-
-        for (uint256 i = 0; i < itemCount; i++) {
-            bytes32 hash = transactionHashes[i];
-            Item storage item = items[hash];
-
-            hashes[i] = hash;
-            products[i] = item.product;
-            quantities[i] = item.qty;
-            values[i] = item.value;
-            exporters[i] = item.exporter;
-            recipients[i] = item.recipient;
-            statuses[i] = item.status;
-        }
-
-        return (hashes, products, quantities, values, exporters, recipients, statuses);
     }
 
     function updateTime(uint256 _time) public onlyOracle {

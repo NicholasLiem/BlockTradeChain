@@ -14,7 +14,7 @@
         "londonBlock": 0
     },
     "difficulty": "400",
-    "gasLimit": "2000000",
+    "gasLimit": "0xE4E1C0",
     "alloc": {
         "9762b70a74e4282bdd2a67e348a52d70fbb58fe0": {
             "balance": "1000000000000000000000"
