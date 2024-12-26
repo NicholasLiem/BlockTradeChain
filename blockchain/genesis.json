@@ -10,7 +10,8 @@
         "constantinopleBlock": 0,
         "petersburgBlock": 0,
         "istanbulBlock": 0,
-        "berlinBlock": 0
+        "berlinBlock": 0,
+        "londonBlock": 0
     },
     "difficulty": "400",
     "gasLimit": "2000000",
