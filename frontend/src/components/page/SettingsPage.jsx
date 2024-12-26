@@ -4,15 +4,21 @@ import { DataListItem, DataListRoot } from "@/components/ui/data-list";
 import PageHeading from '../widget/PageHeading';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
+import { web3 } from '../../web3';
 import Cookies from 'js-cookie';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isSessionValid()) {
-      navigate('/login');
-    }
+    const checkSession = async () => {
+        var status = await isSessionValid()
+        if (!status) {
+            navigate('/login');
+        }
+    };
+
+    checkSession();
   }, [navigate]); 
 
   const stats = [
@@ -20,7 +26,7 @@ const SettingsPage = () => {
     { label: "ID Wallet", value: Cookies.get('walletId') || 'N/A', diff: 12 },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     Cookies.remove('walletId');
     Cookies.remove('password');
     navigate('/login');

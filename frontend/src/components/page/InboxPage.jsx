@@ -12,10 +12,15 @@ const InboxPage = () => {
   const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
-    if (!isSessionValid()) {
-      navigate('/login');
-    }
-  }, [navigate]);
+    const checkSession = async () => {
+        var status = await isSessionValid()
+        if (!status) {
+            navigate('/login');
+        }
+    };
+
+    checkSession();
+  }, [navigate]); 
 
   useEffect(() => {
     const fetchTime = async () => {

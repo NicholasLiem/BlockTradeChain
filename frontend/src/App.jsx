@@ -28,7 +28,12 @@ function AppContent() {
   const [isValidSession, setIsValidSession] = useState(isSessionValid());
 
   useEffect(() => {
-    setIsValidSession(isSessionValid());
+    const checkSession = async () => {
+      const valid = await isSessionValid();
+      setIsValidSession(valid);
+    };
+
+    checkSession();
   }, [location]);
 
   return (

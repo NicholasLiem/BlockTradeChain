@@ -9,9 +9,14 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isSessionValid()) {
-      navigate('/login');
-    }
+    const checkSession = async () => {
+        var status = await isSessionValid()
+        if (!status) {
+            navigate('/login');
+        }
+    };
+
+    checkSession();
   }, [navigate]); 
 
   return (

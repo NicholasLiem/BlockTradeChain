@@ -1,9 +1,14 @@
+import { web3 } from '../web3';
 import Cookies from 'js-cookie';
 
-const isSessionValid = () => {
-    if (Cookies.get('walletId')) {
+const isSessionValid = async () => {
+    const walletId = Cookies.get('walletId'); 
+    const password = Cookies.get('password'); 
+
+    try {
+        await web3.eth.personal.unlockAccount(walletId, password, 5);
         return true;
-    } else {
+    } catch (error) {
         return false;
     }
 }

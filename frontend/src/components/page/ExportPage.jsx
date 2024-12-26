@@ -7,7 +7,6 @@ import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
 import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
-import Cookies from 'js-cookie';
 
 const ExportPage = () => {
   const navigate = useNavigate();
@@ -15,12 +14,15 @@ const ExportPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      if (!isSessionValid()) {
-        navigate('/login');
-        return;
-      }
+    const checkSession = async () => {
+        var status = await isSessionValid()
+        if (!status) {
+            navigate('/login');
+        }
+    };
 
+    checkSession();
+    const init = async () => {
       try {
         await fetchExportData();
 
@@ -36,7 +38,9 @@ const ExportPage = () => {
   const fetchExportData = async () => {
     setIsLoading(true);
     try {
-      const account = Cookies.get('walletId') || "";
+      const account_active = await window.ethereum.request({ method: 'eth_accounts' });
+      const account = account_active[0]
+      console.log(account_active);
       if (!account) throw new Error("Wallet ID is not set");
   
       // Fetch transaction hashes for the user
@@ -74,7 +78,7 @@ const ExportPage = () => {
 
   const handleNewExport = async (product, qty, value, recipient) => {
     try {
-      const account = Cookies.get('walletId') || "";
+      const account = await window.ethereum.request({ method: 'eth_accounts' })[0];
       const transactionHash = await exportItem(product, qty, value, recipient, account);
       console.log("Exported item transaction hash:", transactionHash);
       fetchExportData();

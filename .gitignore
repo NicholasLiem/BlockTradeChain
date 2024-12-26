@@ -32,3 +32,4 @@ _data/
 *.tmp
 
 blockchainData/
+accounts/
