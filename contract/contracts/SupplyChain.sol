@@ -14,6 +14,8 @@ contract SupplyChain {
 
     mapping(bytes32 => Item) private items; // transactionHash => Item
     mapping(bytes32 => address) private itemAccess; // transactionHash => recipient (for privacy)
+    mapping(address => bytes32[]) private inbox; // recipient => transactionHashes
+    mapping(address => bytes32[]) private asset; // recipient => transactionHashes (IMPORTED items)
 
     address public oracle;
     uint256 public lastUpdatedTime;
@@ -39,6 +41,21 @@ contract SupplyChain {
         oracle = _oracle;
     }
 
+    function deriveInboxAddress(address recipient) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(recipient));
+    }
+
+    function removeFromInbox(address recipient, bytes32 transactionHash) internal {
+        bytes32[] storage userInbox = inbox[recipient];
+        for (uint256 i = 0; i < userInbox.length; i++) {
+            if (userInbox[i] == transactionHash) {
+                userInbox[i] = userInbox[userInbox.length - 1];
+                userInbox.pop();
+                break;
+            }
+        }
+    }
+
     function exportItem(
         string memory product,
         uint256 qty,
@@ -51,6 +68,8 @@ contract SupplyChain {
         bytes32 transactionHash = keccak256(
             abi.encodePacked(msg.sender, recipient, block.timestamp, product, qty, value)
         );
+
+        require(items[transactionHash].exporter == address(0), "Item already exists");
         
         // Initialize the item and add the first timestamp after creating the struct
         Item storage newItem = items[transactionHash];
@@ -62,6 +81,9 @@ contract SupplyChain {
         newItem.recipient = recipient;
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
+
+        // Store recipient's inbox
+        inbox[recipient].push(transactionHash);
 
         // Store the recipient for privacy
         itemAccess[transactionHash] = recipient;
@@ -81,6 +103,9 @@ contract SupplyChain {
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
 
+        removeFromInbox(msg.sender, transactionHash);
+        asset[msg.sender].push(transactionHash);
+
         emit StatusUpdated(transactionHash, "IMPORTED", block.timestamp);
     }
 
@@ -92,7 +117,17 @@ contract SupplyChain {
         item.status = "CANCELLED";
         item.statusTimestamps.push(block.timestamp);
 
+        removeFromInbox(msg.sender, transactionHash);
+
         emit StatusUpdated(transactionHash, "CANCELLED", block.timestamp);
+    }
+
+    function getInbox(address recipient) public view returns (bytes32[] memory) {
+        return inbox[recipient];
+    }
+
+    function getAsset(address recipient) public view returns (bytes32[] memory) {
+        return asset[recipient];
     }
 
     function getItemDetails(bytes32 transactionHash) public view returns (Item memory) {
