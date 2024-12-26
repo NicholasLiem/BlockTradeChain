@@ -16,6 +16,8 @@ contract SupplyChain {
     mapping(bytes32 => address) private itemAccess; // transactionHash => recipient (for privacy)
     mapping(address => bytes32[]) private inbox; // recipient => transactionHashes
     mapping(address => bytes32[]) private asset; // recipient => transactionHashes (IMPORTED items)
+    mapping(address => string) private walletNames; // address => Wallet Name
+    mapping(string => address) private nameToAddress; // Wallet Name => address for search
 
     address public oracle;
     uint256 public lastUpdatedTime;
@@ -24,6 +26,7 @@ contract SupplyChain {
     event ItemExported(bytes32 indexed transactionHash, address indexed exporter, address indexed recipient);
     event StatusUpdated(bytes32 indexed transactionHash, string newStatus, uint256 timestamp);
     event TimeUpdated(uint256 timestamp);
+    event WalletNameRegistered(address indexed wallet, string name);
 
     // set the deployer of the contract as the oracle
     constructor() {
@@ -39,6 +42,22 @@ contract SupplyChain {
     function setOracle(address _oracle) public {
         require(msg.sender == oracle, "Only the current oracle can assign a new oracle");
         oracle = _oracle;
+    }
+
+    function registerWalletName(string memory name) public {
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(nameToAddress[name] == address(0), "Name already taken");
+
+        walletNames[msg.sender] = name;
+        nameToAddress[name] = msg.sender;
+
+        emit WalletNameRegistered(msg.sender, name);
+    }
+
+    function searchWalletByName(string memory name) public view returns (address) {
+        address wallet = nameToAddress[name];
+        require(wallet != address(0), "Wallet not found");
+        return wallet;
     }
 
     function deriveInboxAddress(address recipient) public pure returns (bytes32) {
