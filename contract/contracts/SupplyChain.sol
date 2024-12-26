@@ -2,9 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "./DerivedWallet.sol";
-import "./WalletManager.sol";
 
-contract SupplyChain is DerivedWallet, WalletManager {
+contract SupplyChain is DerivedWallet {
     struct Item {
         string product;
         uint256 qty;
@@ -42,7 +41,8 @@ contract SupplyChain is DerivedWallet, WalletManager {
         string memory product,
         uint256 qty,
         uint256 value,
-        address recipient
+        address recipient,
+        bytes32 derivedWallet
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
@@ -61,7 +61,6 @@ contract SupplyChain is DerivedWallet, WalletManager {
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
 
-        bytes32 derivedWallet = deriveWallet(recipient);
         addToInbox(derivedWallet, transactionHash);
 
         transactionHashes.push(transactionHash);
@@ -70,7 +69,7 @@ contract SupplyChain is DerivedWallet, WalletManager {
         return transactionHash;
     }
 
-    function confirmItem(bytes32 transactionHash) public {
+    function confirmItem(bytes32 transactionHash, bytes32 derivedWallet) public {
         Item storage item = items[transactionHash];
         require(item.recipient == msg.sender, "Only the recipient can confirm this item");
         require(
@@ -81,7 +80,6 @@ contract SupplyChain is DerivedWallet, WalletManager {
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
 
-        bytes32 derivedWallet = deriveWallet(msg.sender);
         removeFromInbox(derivedWallet, transactionHash);
         addToAsset(derivedWallet, transactionHash);
 

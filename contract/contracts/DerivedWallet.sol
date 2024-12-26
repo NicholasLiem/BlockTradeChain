@@ -9,8 +9,8 @@ contract DerivedWallet {
     mapping(bytes32 => bytes32[]) internal asset; // Derived wallet => transactionHashes (IMPORTED items)
 
     // Derive a unique wallet address for privacy
-    function deriveWallet(address wallet) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(wallet));
+    function deriveWallet(address wallet, bytes32 userSecret) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(wallet, userSecret));
     }
 
     // Add to inbox
