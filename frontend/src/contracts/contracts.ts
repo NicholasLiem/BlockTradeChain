@@ -1,27 +1,71 @@
-import { supplyChainContract } from '../web3';
+import { supplyChainContract, web3 } from '../web3';
+import type { EventLog } from 'web3';
 
-export async function addItem(
-    itemId: number,
-    name: string,
-    status: string,
+export async function exportItem(
+    product: string,
+    qty: number,
+    value: number,
+    recipient: string,
     account: string
-): Promise<void> {
-    await supplyChainContract.methods.addItem(itemId, name, status).send({ from: account });
-    console.log('Item added:', { itemId, name, status });
+  ): Promise<string> {
+    const gasPrice = (await web3.eth.getGasPrice()).toString();
+    const txReceipt = await supplyChainContract.methods
+      .exportItem(product, qty, value, recipient)
+      .send({ from: account, gasPrice });
+  
+    const itemExportedEvent = txReceipt.events?.ItemExported;
+    if (!itemExportedEvent) {
+      throw new Error("No ItemExported event found in transaction receipt");
+    }
+  
+    const itemHash = itemExportedEvent.returnValues.transactionHash;
+    console.log("Item exported with contract hash:", itemHash);
+  
+    return itemHash as string;
+  }
+
+export async function confirmItem(transactionHash: string, account: string): Promise<void> {
+    await supplyChainContract.methods
+        .confirmItem(transactionHash)
+        .send({ from: account });
+    console.log("Item confirmed:", { transactionHash });
 }
 
-export async function getItem(itemId: number): Promise<{ name: string; status: string }> {
-    const result = await supplyChainContract.methods.getItem(itemId).call();
-    return { name: result[0], status: result[1] };
+export async function denyItem(transactionHash: string, account: string): Promise<void> {
+    await supplyChainContract.methods
+        .denyItem(transactionHash)
+        .send({ from: account });
+    console.log("Item denied:", { transactionHash });
 }
 
-export async function updateStatus(
-    itemId: number,
-    newStatus: string,
-    account: string
-): Promise<void> {
-    await supplyChainContract.methods.updateStatus(itemId, newStatus).send({ from: account });
-    console.log('Status updated:', { itemId, newStatus });
+export async function getItemDetails(transactionHash: string, account: string): Promise<any> {
+    const result = await supplyChainContract.methods
+        .getItemDetails(transactionHash)
+        .call({ from: account });
+    console.log("Item details:", result);
+    return result;
+}
+
+export async function getDebugDetails(transactionHash: string, account: string): Promise<{ exporter: string; recipient: string }> {
+    const result = await supplyChainContract.methods
+        .getDebugDetails(transactionHash)
+        .call({ from: account });
+
+    return {
+        exporter: result[0],
+        recipient: result[1],
+    };
+}
+
+export async function getStatusLog(transactionHash: string, account: string): Promise<number[]> {
+    const result = await supplyChainContract.methods
+        .getStatusLog(transactionHash)
+        .call({ from: account });
+    console.log("Status log:", result);
+    if (!Array.isArray(result)) {
+        throw new Error("Expected result to be an array");
+    }
+    return result.map((timestamp: string) => parseInt(timestamp, 10));
 }
 
 export async function getTime(): Promise<string> {
@@ -45,3 +89,45 @@ export async function getTime(): Promise<string> {
         throw error;
     }
 }
+
+export async function getUserTransactions(userAddress) {
+    try {
+      const exportedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
+        filter: { exporter: userAddress },
+        fromBlock: 0,
+        toBlock: 'latest',
+      });
+  
+      const receivedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
+        filter: { recipient: userAddress },
+        fromBlock: 0,
+        toBlock: 'latest',
+      });
+  
+      const allEvents = [...exportedEvents, ...receivedEvents];
+  
+      // Map each event to an object
+      const allTransactions = allEvents.filter((event): event is EventLog => typeof event !== 'string').map((event: EventLog) => {
+        // This is the item hash from the contract's event, not the blockchain transaction
+        const itemHash = event.returnValues.transactionHash;
+  
+        // If your event only has (transactionHash, exporter, recipient),
+        // do not attempt to read product, qty, or value here.
+        return {
+          transactionHash: itemHash,
+          exporter: event.returnValues.exporter,
+          recipient: event.returnValues.recipient,
+          product: event.returnValues.product, 
+          qty: event.returnValues.qty,
+          value: event.returnValues.value,
+          
+          status: 'EXPORTED',
+        };
+      });
+  
+      return allTransactions;
+    } catch (error) {
+      console.error('Error fetching user transactions:', error);
+      throw error;
+    }
+  }

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading.jsx';
 import InformationCard from '../widget/InformationCard.jsx';
@@ -6,111 +6,94 @@ import ExportTable from '../widget/ExportTable.jsx';
 import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
+import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
+import Cookies from 'js-cookie';
 
 const ExportPage = () => {
   const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isSessionValid()) {
-      navigate('/login');
-    }
-  }, [navigate]); 
+    const init = async () => {
+      if (!isSessionValid()) {
+        navigate('/login');
+        return;
+      }
 
-  const items = [
-    {
-      id: 1,
-      product: "Laptop",
-      qty: 50,
-      exportto: "United States",
-      exportedtime: "2024-12-20 14:00:00",
-      confirmedtime: "2024-12-21 10:00:00",
-    },
-    {
-      id: 2,
-      product: "Smartphone",
-      qty: 200,
-      exportto: "Germany",
-      exportedtime: "2024-12-19 12:00:00",
-      confirmedtime: "",
-    },
-    {
-      id: 3,
-      product: "Headphones",
-      qty: 150,
-      exportto: "Canada",
-      exportedtime: "2024-12-18 15:30:00",
-      confirmedtime: "2024-12-19 09:00:00",
-    },
-    {
-      id: 4,
-      product: "Gaming Console",
-      qty: 75,
-      exportto: "Japan",
-      exportedtime: "2024-12-17 16:45:00",
-      confirmedtime: "",
-    },
-    {
-      id: 5,
-      product: "Tablet",
-      qty: 120,
-      exportto: "United Kingdom",
-      exportedtime: "2024-12-16 10:15:00",
-      confirmedtime: "2024-12-17 08:30:00",
-    },
-    {
-      id: 6,
-      product: "Smartwatch",
-      qty: 80,
-      exportto: "Australia",
-      exportedtime: "2024-12-15 09:00:00",
-      confirmedtime: "",
-    },
-    {
-      id: 7,
-      product: "Camera",
-      qty: 40,
-      exportto: "France",
-      exportedtime: "2024-12-14 14:30:00",
-      confirmedtime: "2024-12-15 11:45:00",
-    },
-    {
-      id: 8,
-      product: "Monitor",
-      qty: 65,
-      exportto: "South Korea",
-      exportedtime: "2024-12-13 13:00:00",
-      confirmedtime: "",
-    },
-    {
-      id: 9,
-      product: "Keyboard",
-      qty: 90,
-      exportto: "India",
-      exportedtime: "2024-12-12 11:00:00",
-      confirmedtime: "2024-12-13 09:30:00",
-    },
-    {
-      id: 10,
-      product: "Mouse",
-      qty: 110,
-      exportto: "Singapore",
-      exportedtime: "2024-12-11 10:45:00",
-      confirmedtime: "",
-    },
-  ];
+      try {
+        await fetchExportData();
+
+        console.log("Fetching item details for debugging...");
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    init();
+  }, [navigate]);
+
+  const fetchExportData = async () => {
+    setIsLoading(true);
+    try {
+      const account = Cookies.get('walletId') || "";
+      if (!account) throw new Error("Wallet ID is not set");
   
+      // Fetch transaction hashes for the user
+      const exportedItems = await getUserTransactions(account);
+      console.log("Exported items:", exportedItems);
+  
+      // Fetch full details for each transaction hash
+      const detailedItems = await Promise.all(
+        exportedItems.map(async (item) => {
+          const details = await getItemDetails(item.transactionHash, account);
+          return {
+            id: item.transactionHash,
+            product: details.product || "Unknown",
+            qty: details.qty ? Number(details.qty) : 0,
+            value: details.value ? Number(details.value) : 0,
+            exportto: item.recipient,
+            exportedtime: details.statusTimestamps?.[0]
+              ? new Date(Number(details.statusTimestamps[0]) * 1000).toLocaleString()
+              : "N/A",
+            confirmedtime:
+              details.status === "IMPORTED" && details.statusTimestamps?.length > 1
+                ? new Date(Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000).toLocaleString()
+                : "",
+          };
+        })
+      );
+  
+      setItems(detailedItems);
+    } catch (error) {
+      console.error("Error fetching export data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNewExport = async (product, qty, value, recipient) => {
+    try {
+      const account = Cookies.get('walletId') || "";
+      const transactionHash = await exportItem(product, qty, value, recipient, account);
+      console.log("Exported item transaction hash:", transactionHash);
+      fetchExportData();
+    } catch (error) {
+      console.error("Failed to export item:", error);
+    }
+  };
+
   return (
     <>
       <Flex justify={'space-between'} width={'100%'} align={'center'}>
-        <PageHeading text={'Export'}/>
-        <AddNewButton/>
+        <PageHeading text={'Export'} />
+        <AddNewButton onNewExport={handleNewExport} />
       </Flex>
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-      <InformationCard value='23.59' title='Clock' description='Current Time (GMT+7)'/>
-        <InformationCard value='1' title='Departed' description='Goods exported'/>
-        <InformationCard value='30' title='Confirmed' description='Successful transaction'/>
+        <InformationCard value={items.length.toString()} title="Departed" description="Goods exported" />
+        <InformationCard value="30" title="Confirmed" description="Successful transaction" />
       </Flex>
-      <ExportTable data={items}/>
+      <ExportTable data={items} isLoading={isLoading} />
     </>
   );
 };
