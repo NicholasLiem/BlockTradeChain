@@ -1,24 +1,33 @@
 import React from 'react';
-import { Card, Flex, Heading } from "@chakra-ui/react"
+import { Box, Heading, Text } from "@chakra-ui/react";
 
-const InformationCard = ({value, title, description}) => {
-
+const InformationCard = ({ value, title, description }) => {
   return (
-    <>
-    <Card.Root width="100%" bg={'white'}>
-        <Card.Body p={'0 auto'}>
-            <Flex gap={'5%'}>
-                <Heading size={'4xl'} color={'#262A41'}>{value}</Heading>
-                <Flex direction={'column'}>
-                    <Card.Title color={'#262A41'}>{title}</Card.Title>
-                    <Card.Description>
-                    {description}
-                    </Card.Description>
-                </Flex>
-            </Flex>
-        </Card.Body>
-    </Card.Root>
-    </>
+    <Box
+      width="100%"
+      maxWidth="300px"
+      bg="white"
+      borderRadius="xl"
+      boxShadow="md"
+      p="6"
+      textAlign="center"
+      _hover={{
+        boxShadow: "md", 
+        transform: "scale(1.05)",
+        transition: "all 0.3s ease-in-out",
+        cursor: "default",
+      }}
+    >
+      <Heading size="3xl" color="#262A41" fontWeight="bold">
+        {value}
+      </Heading>
+      <Text fontSize="3xl" color="#262A41" fontWeight="semibold" mb="2">
+        {title}
+      </Text>
+      <Text fontSize="md" color="gray.500">
+        {description}
+      </Text>
+    </Box>
   );
 };
 

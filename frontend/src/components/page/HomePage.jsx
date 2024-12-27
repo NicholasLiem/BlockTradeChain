@@ -1,41 +1,56 @@
-import React from "react";
-import { Flex } from "@chakra-ui/react";
-import PageHeading from "../widget/PageHeading";
-import InformationCard from "../widget/InformationCard";
-import { useAuth } from "../../context/AuthContext";
-import Popup from "../ui/popup";
+import { useEffect } from 'react';
+import { Flex, Text } from '@chakra-ui/react';
+import PageHeading from '../widget/PageHeading';
+import InformationCard from '../widget/InformationCard';
+import isSessionValid from '../../util/isSessionValid';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-  const {
-    isPopupOpen,
-    setIsPopupOpen,
-    handleSaveDerivedWallet,
-    secret,
-    setSecret,
-  } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkSession = async () => {
+        var status = await isSessionValid()
+        if (!status) {
+            navigate('/login');
+        }
+    };
+
+    checkSession();
+  }, [navigate]); 
 
   return (
     <>
-      <Flex mt={"2%"} gap={"1%"} justify={"space-between"} width={"100%"}>
-        <InformationCard value="23.59" title="Clock" description="Current Time (GMT+7)" />
-        <InformationCard value="1" title="Transactions" description="Total transactions" />
-      </Flex>
-      <Flex mt={"2%"} gap={"1%"} justify={"space-between"} width={"100%"}>
-        <InformationCard value="1" title="Ready" description="Goods arrived to be imported" />
-        <InformationCard value="30" title="Imported" description="Confirmed Imported Goods" />
-      </Flex>
-      <Flex mt={"2%"} gap={"1%"} justify={"space-between"} width={"100%"}>
-        <InformationCard value="1" title="Departed" description="Goods exported" />
-        <InformationCard value="30" title="Confirmed" description="Successful transaction" />
+      <Flex 
+        justify="space-between" 
+        align="center"
+        width="100%" 
+        mt="2%"
+        minHeight="80px"
+      >
+        <PageHeading text={'Welcome back! Let’s track your shipments.'} />
+        <Flex align="center">
+          <Text fontSize="4xl" fontWeight="bold" color="#262A41" mr="2">
+            {23.59}
+          </Text>
+          <Text fontSize="sm" color="gray.500">
+            (GMT+7)
+          </Text>
+        </Flex>
       </Flex>
 
-      <Popup
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        onSave={handleSaveDerivedWallet}
-        secret={secret}
-        setSecret={setSecret}
-      />
+      <Flex mt="2%" gap="2%" justify="center" wrap="wrap" width="100%">
+        <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
+          <InformationCard value="1" title="Transactions" description="Total transactions" />
+          <InformationCard value="1" title="Ready" description="Goods arrived to be imported" />
+        </Flex>
+
+        <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
+          <InformationCard value="30" title="Imported" description="Confirmed Imported Goods" />
+          <InformationCard value="1" title="Departed" description="Goods exported" />
+          <InformationCard value="30" title="Confirmed" description="Successful transaction" />
+        </Flex>
+      </Flex>
     </>
   );
 };
