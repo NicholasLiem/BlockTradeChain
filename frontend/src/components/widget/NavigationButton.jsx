@@ -14,7 +14,7 @@ const NavigationButton = ({ text, path }) => {
     <>
       <Heading
         onClick={handleClick}
-        size={'3xl'}
+        size={'5xl'}
         my={'2%'}
         opacity={location.pathname == path ? 1 : 0.5}
         _hover={{

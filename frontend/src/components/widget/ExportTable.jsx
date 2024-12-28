@@ -60,6 +60,7 @@ const ExportTable = ({ data, isLoading }) => {
                 <Table.Cell>{item.status}</Table.Cell>
                 <Table.Cell>
                   <TableDetailButton
+                    value={item.value}
                     itemid={item.id}
                     exporttime={item.exportedtime}
                     importtime={item.confirmedtime}

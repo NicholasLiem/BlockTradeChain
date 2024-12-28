@@ -6,11 +6,12 @@ import {
 
 const RadioCard = ({ selectedOption, setSelectedOption }) => {
   const handleChange = (event) => {
-    setSelectedOption(event.target.value);
+    console.log(event.value)
+    setSelectedOption(event.value);
   };
 
   return (
-    <RadioCardRoot value={selectedOption} onChange={handleChange} width={'100%'}>
+    <RadioCardRoot defaultValue={'all'} onValueChange={handleChange} colorPalette={'blue'}  width={'100%'}>
       <Flex justify={'space-between'} gap={'2%'} >
         <RadioCardItem 
             color={'black'}

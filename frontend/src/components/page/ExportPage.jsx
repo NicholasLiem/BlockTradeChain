@@ -43,11 +43,9 @@ const ExportPage = () => {
       const account = Cookies.get("walletId");
       if (!account) throw new Error("Wallet ID is not set");
 
-      // Fetch transaction hashes for the user
       const exportedItems = await getUserTransactions(account);
       console.log("Exported items:", exportedItems);
 
-      // Fetch full details for each transaction hash
       const detailedItems = await Promise.all(
         exportedItems.map(async (item) => {
           const details = await getItemDetails(item.transactionHash, account);

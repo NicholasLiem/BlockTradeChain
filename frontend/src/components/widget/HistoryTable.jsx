@@ -6,10 +6,22 @@ import {
   PaginationRoot,
 } from "@/components/ui/pagination"
 import TableDetailButton from "./TableDetailButton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
-const HistoryTable = ({data}) => {
+const HistoryTable = ({data, isLoading}) => {
+  const [page, setPage] = useState(1);
+  const [visibleData, setVisibleData] = useState([]);
+  const pageSize = 10; 
+
+  useEffect(() => {
+    const startIndex = (page - 1) * pageSize;
+    console.log(startIndex)
+    setVisibleData(data.slice(startIndex, startIndex + pageSize))
+  }, [page, data]);
+
   return (
-    <Stack width="full" gap="5">
+    <Flex width='100%' height="100%" justify={'space-between'} direction={'column'}>
       <Table.Root size="sm" variant="outline" borderRadius={'lg'}>
         <Table.Header backgroundColor={'#262A41'}>
           <Table.Row>
@@ -21,20 +33,49 @@ const HistoryTable = ({data}) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {data.map((item) => (
+      
+          { isLoading ? 
+            <Table.Row key="XXXX" color={"black"}>
+              <Table.Cell>
+                <Skeleton flex="1" height="5" variant="pulse" />
+              </Table.Cell>
+              <Table.Cell>
+                <Skeleton flex="1" height="5" variant="pulse" />
+              </Table.Cell>
+              <Table.Cell>
+                <Skeleton flex="1" height="5" variant="pulse" />
+              </Table.Cell>
+              <Table.Cell>
+                <Skeleton flex="1" height="5" variant="pulse" />
+              </Table.Cell>
+              <Table.Cell>
+                <Skeleton flex="1" height="5" variant="pulse" />
+              </Table.Cell>
+            </Table.Row> : 
+            visibleData.map((item) => (
             <Table.Row key={item.id} color={'black'}>
               <Table.Cell >{item.product}</Table.Cell>
               <Table.Cell>{item.qty}</Table.Cell>
               <Table.Cell >{item.exporter}</Table.Cell>
-              <Table.Cell>{item.importer}</Table.Cell>
-              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.itemexporttime} importtime={item.itemimporttime} exchangeRate={item.exchangeRate} exchangeRateTimestamp={item.exchangeRateTimestamp}/></Table.Cell>
+              <Table.Cell>{item.recipient}</Table.Cell>
+              <Table.Cell><TableDetailButton
+                    value={item.value}
+                    itemid={item.id}
+                    exporttime={item.exportedtime}
+                    importtime={item.confirmedtime}
+                    origin={item.origin}
+                    target={item.target}
+                    rate={item.exchangeRate}
+                    ratetime={item.exchangeRateTimeStamp}
+                  /></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
 
       <Flex justify={'center'} width={'100%'}>
-        <PaginationRoot count={data.length * 5} pageSize={5} page={1}>
+        <PaginationRoot count={data.length} pageSize={pageSize} defaultPage={1}
+          onPageChange={(e) => setPage(e.page)}>
           <HStack wrap="wrap">
             <PaginationPrevTrigger color={'black'}/>
             <PaginationItems color={'black'}/>
@@ -42,7 +83,7 @@ const HistoryTable = ({data}) => {
           </HStack>
         </PaginationRoot>
       </Flex>
-    </Stack>
+    </Flex>
   )
 }
 

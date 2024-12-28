@@ -3,7 +3,7 @@ import { Flex, Spinner, Text } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import RadioCard from '../widget/RadioCard';
 import HistoryTable from '../widget/HistoryTable';
-import { getUserTransactions, getAllTransactions } from '../../contracts/contracts';
+import { getUserTransactions, getAllTransactions, getItemDetails } from '../../contracts/contracts';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -17,6 +17,7 @@ const HistoryPage = () => {
 
   const fetchTransactions = async () => {
     try {
+      setLoading(true)
       const sessionValid = await isSessionValid();
       if (!sessionValid) {
         navigate('/login');
@@ -32,19 +33,33 @@ const HistoryPage = () => {
         transactions = await getUserTransactions(userAddress);
       }
 
-      const formattedData = transactions.map((transaction) => ({
-        id: transaction.transactionHash,
-        product: transaction.product || 'Unknown',
-        qty: transaction.qty || 0,
-        exporter: transaction.exporter || 'Unknown',
-        importer: transaction.recipient || 'Unknown',
-        itemexporttime: transaction.timestamp
-          ? new Date(transaction.timestamp * 1000).toLocaleString()
-          : 'N/A',
-        itemimporttime: transaction.importTime
-          ? new Date(transaction.importTime * 1000).toLocaleString()
-          : '-',
-      }));
+      const formattedData = await Promise.all(
+        transactions.map(async (item) => {
+          const details = await getItemDetails(item.transactionHash, userAddress);
+          return {
+            id: item.transactionHash,
+            product: details.product || "Unknown",
+            qty: details.qty ? Number(details.qty) : 0,
+            value: details.value ? Number(details.value) : 0,
+            exporter: item.exporter,
+            recipient: item.recipient,
+            status: details.status || "Unknown",
+            exchangeRate: details.exchangeRate ? Number(details.exchangeRate) : 0,
+            exchangeRateTimestamp: new Date(Number(details.exchangeRateTimestamp) * 1000).toLocaleString(),
+            exportedtime: details.statusTimestamps?.[0]
+              ? new Date(Number(details.statusTimestamps[0]) * 1000).toLocaleString()
+              : "N/A",
+            confirmedtime:
+              details.status === "IMPORTED" && details.statusTimestamps?.length > 1
+                ? new Date(
+                    Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000
+                  ).toLocaleString()
+                : "",
+            origin: details.exporterCurrency,
+            target: details.recipientCurrency,
+          };
+        })
+      );
 
       setData(formattedData);
     } catch (err) {
@@ -59,29 +74,13 @@ const HistoryPage = () => {
     fetchTransactions();
   }, [selectedOption, navigate]);
 
-  if (loading) {
-    return (
-      <Flex justify="center" align="center" height="100vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
-
-  if (error) {
-    return (
-      <Flex justify="center" align="center" height="100vh">
-        <Text fontSize="lg" color="red.500">{error}</Text>
-      </Flex>
-    );
-  }
-
   return (
     <>
       <PageHeading text="History" />
       <Flex my="2%" gap="1%" justify="space-between" width="100%">
       <RadioCard selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </Flex>
-      <HistoryTable data={data} />
+      <HistoryTable data={data} isLoading={loading}/>
     </>
   );
 };

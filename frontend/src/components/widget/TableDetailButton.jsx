@@ -7,11 +7,11 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 
-const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, rate, ratetime }) => {
+const TableDetailButton = ({ itemid, value, exporttime, importtime, origin, target, rate, ratetime }) => {
   return (
     <HoverCardRoot size="lg">
       <HoverCardTrigger asChild>
-        <Link href="#" color="black">See Details</Link>
+        <Link href="#" color="black">Details</Link>
       </HoverCardTrigger>
       <HoverCardContent
         width="100%"
@@ -24,10 +24,11 @@ const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, rat
                 Detail Transaction
               </Text>
               <DataListRoot orientation="horizontal" mt={'2%'} color={'black'}>
-                <DataListItem color='white' key={'exporttime'} label={'Export Time'} value={exporttime} />
-                <DataListItem color='white' key={'importtime'} label={'Import Time'} value={importtime ? importtime : 'Not Confirmed'} />
+                {value && <DataListItem color='white' key={'value'} label={'Value Sent'} value={value} />}
                 {origin && <DataListItem color='white' key={'origin'} label={'Sent Currency'} value={origin} />}
+                <DataListItem color='white' key={'exporttime'} label={'Export Time'} value={exporttime} />
                 {target && <DataListItem color='white' key={'target'} label={'Recipient Currency'} value={target} />}
+                <DataListItem color='white' key={'importtime'} label={'Import Time'} value={importtime ? importtime : 'Not Confirmed'} />
                 {rate && <DataListItem color='white' key={'rate'} label={'Conversion Rate'} value={Number(rate / 1e6).toFixed(6)} />}
                 {ratetime && <DataListItem color='white' key={'ratetime'} label={'Using Rate on'} value={ratetime} />}
               </DataListRoot>
