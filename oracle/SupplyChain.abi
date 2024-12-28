@@ -8,6 +8,37 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "string",
+        "name": "fromCurrency",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "toCurrency",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExchangeRateUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "bytes32",
         "name": "transactionHash",
@@ -55,25 +86,28 @@
     "type": "event"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
-    "name": "TimeUpdated",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "lastUpdatedTime",
+    "name": "exchangeRates",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
         "type": "uint256"
       }
     ],
@@ -131,6 +165,69 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getInbox",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getAssets",
+    "outputs": [
+      {
+        "internalType": "bytes32[]",
+        "name": "",
+        "type": "bytes32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "fromCurrency",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "toCurrency",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateExchangeRate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "product",
         "type": "string"
@@ -149,6 +246,16 @@
         "internalType": "address",
         "name": "recipient",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "exporterCurrency",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "recipientCurrency",
+        "type": "string"
       }
     ],
     "name": "exportItem",
@@ -227,6 +334,26 @@
           },
           {
             "internalType": "string",
+            "name": "exporterCurrency",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "recipientCurrency",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "exchangeRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "exchangeRateTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
             "name": "status",
             "type": "string"
           },
@@ -248,43 +375,26 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "transactionHash",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "fromCurrency",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "toCurrency",
+        "type": "string"
       }
     ],
-    "name": "getStatusLog",
+    "name": "getExchangeRate",
     "outputs": [
       {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
-        "name": "_time",
+        "name": "rate",
         "type": "uint256"
-      }
-    ],
-    "name": "updateTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTime",
-    "outputs": [
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "timestamp",
         "type": "uint256"
       }
     ],

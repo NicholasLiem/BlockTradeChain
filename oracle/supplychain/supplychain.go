@@ -31,18 +31,22 @@ var (
 
 // SupplyChainItem is an auto generated low-level Go binding around an user-defined struct.
 type SupplyChainItem struct {
-	Product          string
-	Qty              *big.Int
-	Value            *big.Int
-	Exporter         common.Address
-	Recipient        common.Address
-	Status           string
-	StatusTimestamps []*big.Int
+	Product               string
+	Qty                   *big.Int
+	Value                 *big.Int
+	Exporter              common.Address
+	Recipient             common.Address
+	ExporterCurrency      string
+	RecipientCurrency     string
+	ExchangeRate          *big.Int
+	ExchangeRateTimestamp *big.Int
+	Status                string
+	StatusTimestamps      []*big.Int
 }
 
 // SupplychainMetaData contains all meta data concerning the Supplychain contract.
 var SupplychainMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"exporter\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"ItemExported\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"StatusUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"TimeUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"lastUpdatedTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"oracle\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transactionHashes\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"setOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"product\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"qty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"exportItem\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"confirmItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"denyItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"getItemDetails\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"product\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"qty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"exporter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"},{\"internalType\":\"uint256[]\",\"name\":\"statusTimestamps\",\"type\":\"uint256[]\"}],\"internalType\":\"structSupplyChain.Item\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"getStatusLog\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_time\",\"type\":\"uint256\"}],\"name\":\"updateTime\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"fromCurrency\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"toCurrency\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"rate\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"ExchangeRateUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"exporter\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"ItemExported\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"newStatus\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"StatusUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"exchangeRates\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"rate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[],\"name\":\"oracle\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transactionHashes\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"setOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getInbox\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getAssets\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"fromCurrency\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"toCurrency\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"rate\",\"type\":\"uint256\"}],\"name\":\"updateExchangeRate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"product\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"qty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"exporterCurrency\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"recipientCurrency\",\"type\":\"string\"}],\"name\":\"exportItem\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"confirmItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"denyItem\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"transactionHash\",\"type\":\"bytes32\"}],\"name\":\"getItemDetails\",\"outputs\":[{\"components\":[{\"internalType\":\"string\",\"name\":\"product\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"qty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"exporter\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"exporterCurrency\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"recipientCurrency\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"exchangeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"exchangeRateTimestamp\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"status\",\"type\":\"string\"},{\"internalType\":\"uint256[]\",\"name\":\"statusTimestamps\",\"type\":\"uint256[]\"}],\"internalType\":\"structSupplyChain.Item\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"fromCurrency\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"toCurrency\",\"type\":\"string\"}],\"name\":\"getExchangeRate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"rate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\",\"constant\":true}]",
 }
 
 // SupplychainABI is the input ABI used to generate the binding from.
@@ -191,9 +195,161 @@ func (_Supplychain *SupplychainTransactorRaw) Transact(opts *bind.TransactOpts, 
 	return _Supplychain.Contract.contract.Transact(opts, method, params...)
 }
 
+// ExchangeRates is a free data retrieval call binding the contract method 0x62860a2b.
+//
+// Solidity: function exchangeRates(string , string ) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainCaller) ExchangeRates(opts *bind.CallOpts, arg0 string, arg1 string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "exchangeRates", arg0, arg1)
+
+	outstruct := new(struct {
+		Rate      *big.Int
+		Timestamp *big.Int
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Rate = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	outstruct.Timestamp = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
+}
+
+// ExchangeRates is a free data retrieval call binding the contract method 0x62860a2b.
+//
+// Solidity: function exchangeRates(string , string ) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainSession) ExchangeRates(arg0 string, arg1 string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	return _Supplychain.Contract.ExchangeRates(&_Supplychain.CallOpts, arg0, arg1)
+}
+
+// ExchangeRates is a free data retrieval call binding the contract method 0x62860a2b.
+//
+// Solidity: function exchangeRates(string , string ) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainCallerSession) ExchangeRates(arg0 string, arg1 string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	return _Supplychain.Contract.ExchangeRates(&_Supplychain.CallOpts, arg0, arg1)
+}
+
+// GetAssets is a free data retrieval call binding the contract method 0x742978da.
+//
+// Solidity: function getAssets(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainCaller) GetAssets(opts *bind.CallOpts, user common.Address) ([][32]byte, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "getAssets", user)
+
+	if err != nil {
+		return *new([][32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([][32]byte)).(*[][32]byte)
+
+	return out0, err
+
+}
+
+// GetAssets is a free data retrieval call binding the contract method 0x742978da.
+//
+// Solidity: function getAssets(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainSession) GetAssets(user common.Address) ([][32]byte, error) {
+	return _Supplychain.Contract.GetAssets(&_Supplychain.CallOpts, user)
+}
+
+// GetAssets is a free data retrieval call binding the contract method 0x742978da.
+//
+// Solidity: function getAssets(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainCallerSession) GetAssets(user common.Address) ([][32]byte, error) {
+	return _Supplychain.Contract.GetAssets(&_Supplychain.CallOpts, user)
+}
+
+// GetExchangeRate is a free data retrieval call binding the contract method 0xa81d6a01.
+//
+// Solidity: function getExchangeRate(string fromCurrency, string toCurrency) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainCaller) GetExchangeRate(opts *bind.CallOpts, fromCurrency string, toCurrency string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "getExchangeRate", fromCurrency, toCurrency)
+
+	outstruct := new(struct {
+		Rate      *big.Int
+		Timestamp *big.Int
+	})
+	if err != nil {
+		return *outstruct, err
+	}
+
+	outstruct.Rate = *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	outstruct.Timestamp = *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return *outstruct, err
+
+}
+
+// GetExchangeRate is a free data retrieval call binding the contract method 0xa81d6a01.
+//
+// Solidity: function getExchangeRate(string fromCurrency, string toCurrency) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainSession) GetExchangeRate(fromCurrency string, toCurrency string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	return _Supplychain.Contract.GetExchangeRate(&_Supplychain.CallOpts, fromCurrency, toCurrency)
+}
+
+// GetExchangeRate is a free data retrieval call binding the contract method 0xa81d6a01.
+//
+// Solidity: function getExchangeRate(string fromCurrency, string toCurrency) view returns(uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainCallerSession) GetExchangeRate(fromCurrency string, toCurrency string) (struct {
+	Rate      *big.Int
+	Timestamp *big.Int
+}, error) {
+	return _Supplychain.Contract.GetExchangeRate(&_Supplychain.CallOpts, fromCurrency, toCurrency)
+}
+
+// GetInbox is a free data retrieval call binding the contract method 0x02201681.
+//
+// Solidity: function getInbox(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainCaller) GetInbox(opts *bind.CallOpts, user common.Address) ([][32]byte, error) {
+	var out []interface{}
+	err := _Supplychain.contract.Call(opts, &out, "getInbox", user)
+
+	if err != nil {
+		return *new([][32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([][32]byte)).(*[][32]byte)
+
+	return out0, err
+
+}
+
+// GetInbox is a free data retrieval call binding the contract method 0x02201681.
+//
+// Solidity: function getInbox(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainSession) GetInbox(user common.Address) ([][32]byte, error) {
+	return _Supplychain.Contract.GetInbox(&_Supplychain.CallOpts, user)
+}
+
+// GetInbox is a free data retrieval call binding the contract method 0x02201681.
+//
+// Solidity: function getInbox(address user) view returns(bytes32[])
+func (_Supplychain *SupplychainCallerSession) GetInbox(user common.Address) ([][32]byte, error) {
+	return _Supplychain.Contract.GetInbox(&_Supplychain.CallOpts, user)
+}
+
 // GetItemDetails is a free data retrieval call binding the contract method 0xd1e3d120.
 //
-// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,uint256[]))
+// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,string,uint256,uint256,string,uint256[]))
 func (_Supplychain *SupplychainCaller) GetItemDetails(opts *bind.CallOpts, transactionHash [32]byte) (SupplyChainItem, error) {
 	var out []interface{}
 	err := _Supplychain.contract.Call(opts, &out, "getItemDetails", transactionHash)
@@ -210,109 +366,16 @@ func (_Supplychain *SupplychainCaller) GetItemDetails(opts *bind.CallOpts, trans
 
 // GetItemDetails is a free data retrieval call binding the contract method 0xd1e3d120.
 //
-// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,uint256[]))
+// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,string,uint256,uint256,string,uint256[]))
 func (_Supplychain *SupplychainSession) GetItemDetails(transactionHash [32]byte) (SupplyChainItem, error) {
 	return _Supplychain.Contract.GetItemDetails(&_Supplychain.CallOpts, transactionHash)
 }
 
 // GetItemDetails is a free data retrieval call binding the contract method 0xd1e3d120.
 //
-// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,uint256[]))
+// Solidity: function getItemDetails(bytes32 transactionHash) view returns((string,uint256,uint256,address,address,string,string,uint256,uint256,string,uint256[]))
 func (_Supplychain *SupplychainCallerSession) GetItemDetails(transactionHash [32]byte) (SupplyChainItem, error) {
 	return _Supplychain.Contract.GetItemDetails(&_Supplychain.CallOpts, transactionHash)
-}
-
-// GetStatusLog is a free data retrieval call binding the contract method 0x6f8d7401.
-//
-// Solidity: function getStatusLog(bytes32 transactionHash) view returns(uint256[])
-func (_Supplychain *SupplychainCaller) GetStatusLog(opts *bind.CallOpts, transactionHash [32]byte) ([]*big.Int, error) {
-	var out []interface{}
-	err := _Supplychain.contract.Call(opts, &out, "getStatusLog", transactionHash)
-
-	if err != nil {
-		return *new([]*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
-
-	return out0, err
-
-}
-
-// GetStatusLog is a free data retrieval call binding the contract method 0x6f8d7401.
-//
-// Solidity: function getStatusLog(bytes32 transactionHash) view returns(uint256[])
-func (_Supplychain *SupplychainSession) GetStatusLog(transactionHash [32]byte) ([]*big.Int, error) {
-	return _Supplychain.Contract.GetStatusLog(&_Supplychain.CallOpts, transactionHash)
-}
-
-// GetStatusLog is a free data retrieval call binding the contract method 0x6f8d7401.
-//
-// Solidity: function getStatusLog(bytes32 transactionHash) view returns(uint256[])
-func (_Supplychain *SupplychainCallerSession) GetStatusLog(transactionHash [32]byte) ([]*big.Int, error) {
-	return _Supplychain.Contract.GetStatusLog(&_Supplychain.CallOpts, transactionHash)
-}
-
-// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
-//
-// Solidity: function getTime() view returns(uint256)
-func (_Supplychain *SupplychainCaller) GetTime(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _Supplychain.contract.Call(opts, &out, "getTime")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
-//
-// Solidity: function getTime() view returns(uint256)
-func (_Supplychain *SupplychainSession) GetTime() (*big.Int, error) {
-	return _Supplychain.Contract.GetTime(&_Supplychain.CallOpts)
-}
-
-// GetTime is a free data retrieval call binding the contract method 0x557ed1ba.
-//
-// Solidity: function getTime() view returns(uint256)
-func (_Supplychain *SupplychainCallerSession) GetTime() (*big.Int, error) {
-	return _Supplychain.Contract.GetTime(&_Supplychain.CallOpts)
-}
-
-// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
-//
-// Solidity: function lastUpdatedTime() view returns(uint256)
-func (_Supplychain *SupplychainCaller) LastUpdatedTime(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _Supplychain.contract.Call(opts, &out, "lastUpdatedTime")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
-//
-// Solidity: function lastUpdatedTime() view returns(uint256)
-func (_Supplychain *SupplychainSession) LastUpdatedTime() (*big.Int, error) {
-	return _Supplychain.Contract.LastUpdatedTime(&_Supplychain.CallOpts)
-}
-
-// LastUpdatedTime is a free data retrieval call binding the contract method 0xbf856895.
-//
-// Solidity: function lastUpdatedTime() view returns(uint256)
-func (_Supplychain *SupplychainCallerSession) LastUpdatedTime() (*big.Int, error) {
-	return _Supplychain.Contract.LastUpdatedTime(&_Supplychain.CallOpts)
 }
 
 // Oracle is a free data retrieval call binding the contract method 0x7dc0d1d0.
@@ -419,25 +482,25 @@ func (_Supplychain *SupplychainTransactorSession) DenyItem(transactionHash [32]b
 	return _Supplychain.Contract.DenyItem(&_Supplychain.TransactOpts, transactionHash)
 }
 
-// ExportItem is a paid mutator transaction binding the contract method 0xc3b77da8.
+// ExportItem is a paid mutator transaction binding the contract method 0x8b784a71.
 //
-// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient) returns(bytes32)
-func (_Supplychain *SupplychainTransactor) ExportItem(opts *bind.TransactOpts, product string, qty *big.Int, value *big.Int, recipient common.Address) (*types.Transaction, error) {
-	return _Supplychain.contract.Transact(opts, "exportItem", product, qty, value, recipient)
+// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient, string exporterCurrency, string recipientCurrency) returns(bytes32)
+func (_Supplychain *SupplychainTransactor) ExportItem(opts *bind.TransactOpts, product string, qty *big.Int, value *big.Int, recipient common.Address, exporterCurrency string, recipientCurrency string) (*types.Transaction, error) {
+	return _Supplychain.contract.Transact(opts, "exportItem", product, qty, value, recipient, exporterCurrency, recipientCurrency)
 }
 
-// ExportItem is a paid mutator transaction binding the contract method 0xc3b77da8.
+// ExportItem is a paid mutator transaction binding the contract method 0x8b784a71.
 //
-// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient) returns(bytes32)
-func (_Supplychain *SupplychainSession) ExportItem(product string, qty *big.Int, value *big.Int, recipient common.Address) (*types.Transaction, error) {
-	return _Supplychain.Contract.ExportItem(&_Supplychain.TransactOpts, product, qty, value, recipient)
+// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient, string exporterCurrency, string recipientCurrency) returns(bytes32)
+func (_Supplychain *SupplychainSession) ExportItem(product string, qty *big.Int, value *big.Int, recipient common.Address, exporterCurrency string, recipientCurrency string) (*types.Transaction, error) {
+	return _Supplychain.Contract.ExportItem(&_Supplychain.TransactOpts, product, qty, value, recipient, exporterCurrency, recipientCurrency)
 }
 
-// ExportItem is a paid mutator transaction binding the contract method 0xc3b77da8.
+// ExportItem is a paid mutator transaction binding the contract method 0x8b784a71.
 //
-// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient) returns(bytes32)
-func (_Supplychain *SupplychainTransactorSession) ExportItem(product string, qty *big.Int, value *big.Int, recipient common.Address) (*types.Transaction, error) {
-	return _Supplychain.Contract.ExportItem(&_Supplychain.TransactOpts, product, qty, value, recipient)
+// Solidity: function exportItem(string product, uint256 qty, uint256 value, address recipient, string exporterCurrency, string recipientCurrency) returns(bytes32)
+func (_Supplychain *SupplychainTransactorSession) ExportItem(product string, qty *big.Int, value *big.Int, recipient common.Address, exporterCurrency string, recipientCurrency string) (*types.Transaction, error) {
+	return _Supplychain.Contract.ExportItem(&_Supplychain.TransactOpts, product, qty, value, recipient, exporterCurrency, recipientCurrency)
 }
 
 // SetOracle is a paid mutator transaction binding the contract method 0x7adbf973.
@@ -461,25 +524,162 @@ func (_Supplychain *SupplychainTransactorSession) SetOracle(_oracle common.Addre
 	return _Supplychain.Contract.SetOracle(&_Supplychain.TransactOpts, _oracle)
 }
 
-// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+// UpdateExchangeRate is a paid mutator transaction binding the contract method 0xf98520bd.
 //
-// Solidity: function updateTime(uint256 _time) returns()
-func (_Supplychain *SupplychainTransactor) UpdateTime(opts *bind.TransactOpts, _time *big.Int) (*types.Transaction, error) {
-	return _Supplychain.contract.Transact(opts, "updateTime", _time)
+// Solidity: function updateExchangeRate(string fromCurrency, string toCurrency, uint256 rate) returns()
+func (_Supplychain *SupplychainTransactor) UpdateExchangeRate(opts *bind.TransactOpts, fromCurrency string, toCurrency string, rate *big.Int) (*types.Transaction, error) {
+	return _Supplychain.contract.Transact(opts, "updateExchangeRate", fromCurrency, toCurrency, rate)
 }
 
-// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+// UpdateExchangeRate is a paid mutator transaction binding the contract method 0xf98520bd.
 //
-// Solidity: function updateTime(uint256 _time) returns()
-func (_Supplychain *SupplychainSession) UpdateTime(_time *big.Int) (*types.Transaction, error) {
-	return _Supplychain.Contract.UpdateTime(&_Supplychain.TransactOpts, _time)
+// Solidity: function updateExchangeRate(string fromCurrency, string toCurrency, uint256 rate) returns()
+func (_Supplychain *SupplychainSession) UpdateExchangeRate(fromCurrency string, toCurrency string, rate *big.Int) (*types.Transaction, error) {
+	return _Supplychain.Contract.UpdateExchangeRate(&_Supplychain.TransactOpts, fromCurrency, toCurrency, rate)
 }
 
-// UpdateTime is a paid mutator transaction binding the contract method 0x6c59bd0c.
+// UpdateExchangeRate is a paid mutator transaction binding the contract method 0xf98520bd.
 //
-// Solidity: function updateTime(uint256 _time) returns()
-func (_Supplychain *SupplychainTransactorSession) UpdateTime(_time *big.Int) (*types.Transaction, error) {
-	return _Supplychain.Contract.UpdateTime(&_Supplychain.TransactOpts, _time)
+// Solidity: function updateExchangeRate(string fromCurrency, string toCurrency, uint256 rate) returns()
+func (_Supplychain *SupplychainTransactorSession) UpdateExchangeRate(fromCurrency string, toCurrency string, rate *big.Int) (*types.Transaction, error) {
+	return _Supplychain.Contract.UpdateExchangeRate(&_Supplychain.TransactOpts, fromCurrency, toCurrency, rate)
+}
+
+// SupplychainExchangeRateUpdatedIterator is returned from FilterExchangeRateUpdated and is used to iterate over the raw logs and unpacked data for ExchangeRateUpdated events raised by the Supplychain contract.
+type SupplychainExchangeRateUpdatedIterator struct {
+	Event *SupplychainExchangeRateUpdated // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *SupplychainExchangeRateUpdatedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(SupplychainExchangeRateUpdated)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(SupplychainExchangeRateUpdated)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *SupplychainExchangeRateUpdatedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *SupplychainExchangeRateUpdatedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// SupplychainExchangeRateUpdated represents a ExchangeRateUpdated event raised by the Supplychain contract.
+type SupplychainExchangeRateUpdated struct {
+	FromCurrency string
+	ToCurrency   string
+	Rate         *big.Int
+	Timestamp    *big.Int
+	Raw          types.Log // Blockchain specific contextual infos
+}
+
+// FilterExchangeRateUpdated is a free log retrieval operation binding the contract event 0x4532b706ba3a37dd34d2e2925367e85e209dc5877d276229a34ea1452dc9a628.
+//
+// Solidity: event ExchangeRateUpdated(string fromCurrency, string toCurrency, uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) FilterExchangeRateUpdated(opts *bind.FilterOpts) (*SupplychainExchangeRateUpdatedIterator, error) {
+
+	logs, sub, err := _Supplychain.contract.FilterLogs(opts, "ExchangeRateUpdated")
+	if err != nil {
+		return nil, err
+	}
+	return &SupplychainExchangeRateUpdatedIterator{contract: _Supplychain.contract, event: "ExchangeRateUpdated", logs: logs, sub: sub}, nil
+}
+
+// WatchExchangeRateUpdated is a free log subscription operation binding the contract event 0x4532b706ba3a37dd34d2e2925367e85e209dc5877d276229a34ea1452dc9a628.
+//
+// Solidity: event ExchangeRateUpdated(string fromCurrency, string toCurrency, uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) WatchExchangeRateUpdated(opts *bind.WatchOpts, sink chan<- *SupplychainExchangeRateUpdated) (event.Subscription, error) {
+
+	logs, sub, err := _Supplychain.contract.WatchLogs(opts, "ExchangeRateUpdated")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(SupplychainExchangeRateUpdated)
+				if err := _Supplychain.contract.UnpackLog(event, "ExchangeRateUpdated", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseExchangeRateUpdated is a log parse operation binding the contract event 0x4532b706ba3a37dd34d2e2925367e85e209dc5877d276229a34ea1452dc9a628.
+//
+// Solidity: event ExchangeRateUpdated(string fromCurrency, string toCurrency, uint256 rate, uint256 timestamp)
+func (_Supplychain *SupplychainFilterer) ParseExchangeRateUpdated(log types.Log) (*SupplychainExchangeRateUpdated, error) {
+	event := new(SupplychainExchangeRateUpdated)
+	if err := _Supplychain.contract.UnpackLog(event, "ExchangeRateUpdated", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // SupplychainItemExportedIterator is returned from FilterItemExported and is used to iterate over the raw logs and unpacked data for ItemExported events raised by the Supplychain contract.
@@ -784,140 +984,6 @@ func (_Supplychain *SupplychainFilterer) WatchStatusUpdated(opts *bind.WatchOpts
 func (_Supplychain *SupplychainFilterer) ParseStatusUpdated(log types.Log) (*SupplychainStatusUpdated, error) {
 	event := new(SupplychainStatusUpdated)
 	if err := _Supplychain.contract.UnpackLog(event, "StatusUpdated", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// SupplychainTimeUpdatedIterator is returned from FilterTimeUpdated and is used to iterate over the raw logs and unpacked data for TimeUpdated events raised by the Supplychain contract.
-type SupplychainTimeUpdatedIterator struct {
-	Event *SupplychainTimeUpdated // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *SupplychainTimeUpdatedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(SupplychainTimeUpdated)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(SupplychainTimeUpdated)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *SupplychainTimeUpdatedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *SupplychainTimeUpdatedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// SupplychainTimeUpdated represents a TimeUpdated event raised by the Supplychain contract.
-type SupplychainTimeUpdated struct {
-	Timestamp *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterTimeUpdated is a free log retrieval operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
-//
-// Solidity: event TimeUpdated(uint256 timestamp)
-func (_Supplychain *SupplychainFilterer) FilterTimeUpdated(opts *bind.FilterOpts) (*SupplychainTimeUpdatedIterator, error) {
-
-	logs, sub, err := _Supplychain.contract.FilterLogs(opts, "TimeUpdated")
-	if err != nil {
-		return nil, err
-	}
-	return &SupplychainTimeUpdatedIterator{contract: _Supplychain.contract, event: "TimeUpdated", logs: logs, sub: sub}, nil
-}
-
-// WatchTimeUpdated is a free log subscription operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
-//
-// Solidity: event TimeUpdated(uint256 timestamp)
-func (_Supplychain *SupplychainFilterer) WatchTimeUpdated(opts *bind.WatchOpts, sink chan<- *SupplychainTimeUpdated) (event.Subscription, error) {
-
-	logs, sub, err := _Supplychain.contract.WatchLogs(opts, "TimeUpdated")
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(SupplychainTimeUpdated)
-				if err := _Supplychain.contract.UnpackLog(event, "TimeUpdated", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseTimeUpdated is a log parse operation binding the contract event 0x89c93b2d508150920890ffe8618ab7811923d95fa8770ecb495ca54cb15c7169.
-//
-// Solidity: event TimeUpdated(uint256 timestamp)
-func (_Supplychain *SupplychainFilterer) ParseTimeUpdated(log types.Log) (*SupplychainTimeUpdated, error) {
-	event := new(SupplychainTimeUpdated)
-	if err := _Supplychain.contract.UnpackLog(event, "TimeUpdated", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

@@ -27,7 +27,7 @@ const HistoryTable = ({data}) => {
               <Table.Cell>{item.qty}</Table.Cell>
               <Table.Cell >{item.exporter}</Table.Cell>
               <Table.Cell>{item.importer}</Table.Cell>
-              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.itemexporttime} importtime={item.itemimporttime}/></Table.Cell>
+              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.itemexporttime} importtime={item.itemimporttime} exchangeRate={item.exchangeRate} exchangeRateTimestamp={item.exchangeRateTimestamp}/></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

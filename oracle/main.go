@@ -21,7 +21,7 @@ func main() {
 
     r := gin.Default()
 
-    r.PUT("/updateTime", handlers.UpdateTimeHandler(supplyChain, auth))
+    r.PUT("/exchangeRate", handlers.UpdateExchangeRate(supplyChain, auth))
 	
     r.Run(":8080")
 }

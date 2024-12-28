@@ -3,7 +3,7 @@ import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import ImportTable from '../widget/ImportTable';
-import { getTime, getUserTransactions, confirmItem, denyItem, getInbox } from '../../contracts/contracts';
+import { confirmItem, denyItem, getInbox } from '../../contracts/contracts';
 import { useAuth } from '../../context/AuthContext';
 
 const InboxPage = () => {
@@ -18,19 +18,6 @@ const InboxPage = () => {
       return;
     }
   }, [walletId, logout]);
-
-  useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const time = await getTime();
-        setCurrentTime(time);
-      } catch (error) {
-        console.error('Error fetching time:', error);
-      }
-    };
-
-    fetchTime();
-  }, []);
 
   useEffect(() => {
     const fetchInboxItems = async () => {

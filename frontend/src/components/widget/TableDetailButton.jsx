@@ -14,7 +14,7 @@ const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, rat
         <Link href="#" color="black">See Details</Link>
       </HoverCardTrigger>
       <HoverCardContent
-        width="100%"  
+        width="100%"
       >
         <HoverCardArrow />
         <Stack gap="4" direction="row">
