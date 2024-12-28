@@ -10,3 +10,10 @@ export interface ExportItem {
     exportedTime: BigInt | string;
     confirmedTime: BigInt | string | null;
 }
+
+export interface ExchangeRate {
+    fromCurrency: string;
+    toCurrency: string;
+    rate: BigInt;
+    timestamp: BigInt;
+}

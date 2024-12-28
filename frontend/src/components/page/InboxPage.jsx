@@ -3,7 +3,7 @@ import { Flex } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import ImportTable from '../widget/ImportTable';
-import { getTime, getUserTransactions, confirmItem, denyItem, getInbox } from '../../contracts/contracts';
+import { confirmItem, denyItem, getInbox, fetchExchangeRateEvents } from '../../contracts/contracts';
 import { useAuth } from '../../context/AuthContext';
 
 const InboxPage = () => {
@@ -20,17 +20,16 @@ const InboxPage = () => {
   }, [walletId, logout]);
 
   useEffect(() => {
-    const fetchTime = async () => {
+    const fetchExchangeRate = async () => {
       try {
-        const time = await getTime();
-        setCurrentTime(time);
+        const events = await fetchExchangeRateEvents();
       } catch (error) {
-        console.error('Error fetching time:', error);
+        console.error('Error fetching exchange rate:', error);
       }
-    };
+    }
 
-    fetchTime();
-  }, []);
+    fetchExchangeRate();
+  }, [])
 
   useEffect(() => {
     const fetchInboxItems = async () => {

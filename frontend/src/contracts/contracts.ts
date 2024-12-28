@@ -1,6 +1,6 @@
 import { supplyChainContract, web3 } from '../util/web3';
 import type { EventLog } from 'web3';
-import { ExportItem } from './types';
+import { ExportItem, ExchangeRate } from './types';
 
 export async function exportItem(
   product: string,
@@ -49,25 +49,6 @@ export async function getItemDetails(transactionHash: string, account: string): 
     .call({ from: account });
   console.log("Item details:", result);
   return result;
-}
-
-export async function getTime(): Promise<string> {
-  try {
-    const rawResult = await supplyChainContract.methods.getTime().call();
-
-    if (rawResult === undefined || rawResult === null) {
-      throw new Error("Invalid rawResult");
-    }
-    const timestamp = typeof rawResult === 'bigint' ? Number(rawResult) : parseInt(rawResult.toString(), 10);
-
-
-    const date = new Date(timestamp * 1000);
-
-    return date.toLocaleString();
-  } catch (error) {
-    console.error("Error fetching time:", error);
-    throw error;
-  }
 }
 
 export async function getUserTransactions(userAddress: string) {
@@ -190,5 +171,42 @@ export async function getInbox(walletId: string): Promise<ExportItem[]> {
   } catch (error) {
     console.error('Error fetching inbox:', error);
     throw new Error('Failed to fetch inbox.');
+  }
+}
+
+export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<number> {
+  try {
+    const exchangeRate = await supplyChainContract.methods
+      .getExchangeRate(fromCurrency, toCurrency)
+      .call();
+    return Number(exchangeRate);
+  } catch (error) {
+    console.error('Error fetching exchange rate:', error);
+    throw new Error('Failed to fetch exchange rate.');
+  }
+}
+
+export async function fetchExchangeRateEvents() {
+  try {
+    const events = await supplyChainContract.getPastEvents('ExchangeRateUpdated' as any, {
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+
+    console.log('Exchange rate events:', events);
+
+    events
+      .filter((event): event is EventLog => typeof event !== 'string')
+      .forEach(event => {
+        const { fromCurrency, toCurrency, rate, timestamp } = event.returnValues;
+        console.log(`Event Details: 
+          From: ${fromCurrency}, 
+          To: ${toCurrency}, 
+          Rate: ${rate}, 
+          Timestamp: ${new Date(Number(timestamp) * 1000).toLocaleString()}`
+        );
+      });
+  } catch (error) {
+    console.error('Error fetching events:', error);
   }
 }

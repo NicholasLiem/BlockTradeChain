@@ -25,7 +25,7 @@ const ExportTable = ({ data }) => {
               <Table.Cell>{item.product}</Table.Cell>
               <Table.Cell>{item.qty}</Table.Cell>
               <Table.Cell>{item.exportto}</Table.Cell>
-              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.exportedtime} importtime={item.confirmedtime} origin={item.origin} target={item.target}/></Table.Cell>
+              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.exportedtime} importtime={item.confirmedtime} origin={item.origin} target={item.target} exchangeRate={item.exchangeRate} exchangeRateTimestamp={item.exchangeRateTimestamp}/></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

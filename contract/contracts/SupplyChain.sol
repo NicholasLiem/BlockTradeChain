@@ -24,7 +24,6 @@ contract SupplyChain {
     mapping(address => bytes32[]) private userAssets;
     mapping(string => mapping(string => ExchangeRate)) public exchangeRates; // fromCurrency => toCurrency => ExchangeRate
     address public oracle;
-    uint256 public lastUpdatedTime;
     bytes32[] public transactionHashes;
 
     event ItemExported(
@@ -43,11 +42,9 @@ contract SupplyChain {
         uint256 rate,
         uint256 timestamp
     );
-    event TimeUpdated(uint256 timestamp);
 
     constructor() {
         oracle = msg.sender;
-        lastUpdatedTime = block.timestamp;
     }
 
     modifier onlyOracle() {
@@ -93,6 +90,17 @@ contract SupplyChain {
         );
     }
 
+    function getExchangeRate(
+        string memory fromCurrency,
+        string memory toCurrency
+    ) public view returns (uint256 rate, uint256 timestamp) {
+        ExchangeRate memory exchangeRate = exchangeRates[fromCurrency][
+            toCurrency
+        ];
+        require(exchangeRate.rate > 0, "Exchange rate not available");
+        return (exchangeRate.rate, exchangeRate.timestamp);
+    }
+
     function exportItem(
         string memory product,
         uint256 qty,
@@ -103,11 +111,38 @@ contract SupplyChain {
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
-        // Get the current exchange rate
-        ExchangeRate memory rate = exchangeRates[exporterCurrency][recipientCurrency];
-        if (rate.rate == 0) {
-            rate.rate = 1;
-            rate.timestamp = block.timestamp;
+        uint256 finalRate;
+        uint256 rateTimestamp;
+
+        if (keccak256(bytes(exporterCurrency)) == keccak256(bytes("USD"))) {
+            // Directly use USD to recipientCurrency
+            ExchangeRate memory usdToRecipient = exchangeRates["USD"][
+                recipientCurrency
+            ];
+            if (usdToRecipient.rate > 0) {
+                finalRate = usdToRecipient.rate;
+                rateTimestamp = usdToRecipient.timestamp;
+            }
+        } else {
+            // Calculate via base (USD)
+            ExchangeRate memory baseToExporter = exchangeRates["USD"][
+                exporterCurrency
+            ];
+            ExchangeRate memory baseToRecipient = exchangeRates["USD"][
+                recipientCurrency
+            ];
+
+            if (baseToExporter.rate > 0 && baseToRecipient.rate > 0) {
+                uint256 exporterToBase = 1e18 / baseToExporter.rate;
+                finalRate = (exporterToBase * baseToRecipient.rate) / 1e18;
+                rateTimestamp = block.timestamp;
+            }
+        }
+
+        // Fallback to default rate if no rates are available
+        if (finalRate == 0) {
+            finalRate = 1;
+            rateTimestamp = block.timestamp;
         }
 
         bytes32 transactionHash = keccak256(
@@ -136,8 +171,8 @@ contract SupplyChain {
         newItem.recipient = recipient;
         newItem.exporterCurrency = exporterCurrency;
         newItem.recipientCurrency = recipientCurrency;
-        newItem.exchangeRate = rate.rate;
-        newItem.exchangeRateTimestamp = rate.timestamp;
+        newItem.exchangeRate = finalRate;
+        newItem.exchangeRateTimestamp = rateTimestamp;
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
 
@@ -220,14 +255,5 @@ contract SupplyChain {
     function addToAsset(address user, bytes32 transactionHash) internal {
         require(msg.sender == user, "Not authorized to add to this asset list");
         userAssets[user].push(transactionHash);
-    }
-
-    function updateTime() public onlyOracle {
-        lastUpdatedTime = block.timestamp;
-        emit TimeUpdated(block.timestamp);
-    }
-
-    function getTime() public view returns (uint256) {
-        return lastUpdatedTime;
     }
 }
