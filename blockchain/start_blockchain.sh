@@ -2,7 +2,7 @@
 
 DATA_DIR="./blockchainData"
 
-ETHERBASE=36f09de68ce7e1cac91222205de80529e39083b7
+ETHERBASE=f67edd81349da2cb5f492d0d03ec4b6f6c4ff4e8
 
 if [ -z "$ETHERBASE" ]; then
   echo "Error: No accounts found. Please create an account before starting the miner."

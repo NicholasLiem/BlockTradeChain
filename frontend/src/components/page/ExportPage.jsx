@@ -57,6 +57,7 @@ const ExportPage = () => {
             qty: details.qty ? Number(details.qty) : 0,
             value: details.value ? Number(details.value) : 0,
             exportto: item.recipient,
+            status: details.status || "Unknown",
             exportedtime: details.statusTimestamps?.[0]
               ? new Date(Number(details.statusTimestamps[0]) * 1000).toLocaleString()
               : "N/A",

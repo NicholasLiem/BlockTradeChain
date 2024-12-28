@@ -46,7 +46,7 @@ const InboxPage = () => {
     };
 
     fetchInboxItems();
-  }, [walletId]);
+  }, [walletId, inboxItems]);
 
   const handleConfirm = async (transactionHash) => {
     try {
