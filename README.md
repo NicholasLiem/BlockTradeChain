@@ -1,8 +1,10 @@
 # BlockTradeChain (BTC)
-<!-- Deskripsi Singkat ttg BTC -->
+The traditional management system for the supply chain in importing goods still has some inefficiencies, lack of transparency, and trust between stakeholders. It is very possible for delays, fraud, and errors to occur due to manual data submission so that not only that but also a protected system is created and also has limited traceability. Moreover, payment management and contractual obligations usually require intermediaries or mediators, adding time and costs to carry out the process. These shortcomings are caused because the system is not well integrated, therefore a new system is needed that guarantees the needs of stakeholders, especially trust between them. We developed this new system which is BlockTradeChain.
 
 ## System Requirement
-<!-- System Requirement -->
+1. It is preferable to use a quad-core (or dual-core hyperthreaded) CPU. Geth is released for a wide range of architectures.
+2. It is recommended to use at least 16GB RAM.
+[Geth Hardware System Requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)
 
 ## How to Run Private Chain
 Here's a quick tutorial how to run the private chain. <br>
