@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading.jsx';
-import InformationCard from '../widget/InformationCard.jsx';
+import SummaryCard from '../widget/SummaryCard.jsx';
 import ExportTable from '../widget/ExportTable.jsx';
 import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
@@ -70,7 +70,7 @@ const ExportPage = () => {
                   ).toLocaleString()
                 : "",
             origin: details.exporterCurrency,
-            target: details.recipientCurrency
+            target: details.recipientCurrency,
           };
         })
       );
@@ -101,9 +101,14 @@ const ExportPage = () => {
         <AddNewButton onNewExport={handleNewExport} />
       </Flex>
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <InformationCard value={items.length.toString()} title="Departed" description="Goods exported" />
-        <InformationCard value="30" title="Confirmed" description="Successful transaction" />
+        <SummaryCard value={items.length.toString()} isLoading={isLoading} title="Exports" description="Total export attempts" />
+        <SummaryCard value={items.filter(item => item.status === 'EXPORTED').length.toString()} isLoading={isLoading} title="Departed" description="Goods exported" />
+        <SummaryCard value={items.filter(item => item.status === 'IMPORTED').length.toString()} title="Confirmed" isLoading={isLoading} description="Successful transaction" />
+        <SummaryCard value={items.filter(item => item.status === 'CANCELLED').length.toString()} title="Cancelled" isLoading={isLoading} description="Goods Returned by Recipient" />
       </Flex>
+      <Text fontSize="xl" color="#262A41" fontWeight="semibold" mb="2">
+        Export History
+      </Text>
       <ExportTable data={items} isLoading={isLoading} />
     </>
   );

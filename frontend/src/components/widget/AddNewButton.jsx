@@ -3,6 +3,7 @@ import { Flex, Input, Stack } from "@chakra-ui/react";
 import { createListCollection } from "@chakra-ui/react"
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { Spinner } from "@chakra-ui/react"
 import {
   PopoverArrow,
   PopoverBody,
@@ -14,11 +15,11 @@ import {
 import {
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectRoot,
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select"
+import { Toaster, toaster } from "@/components/ui/toaster"
 
 const AddNewButton = ({ onNewExport }) => {
   const [product, setProduct] = useState('');
@@ -28,6 +29,7 @@ const AddNewButton = ({ onNewExport }) => {
   const [currency, setCurrency] = useState('');
   const [target, setTarget] = useState('');
   const [rate, setRate] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const currencies = createListCollection({
     items: [
@@ -216,18 +218,33 @@ const AddNewButton = ({ onNewExport }) => {
     "ZWL":25.7692
    }
 
-  const handleExportClick = () => {
+  const handleExportClick = async () => {
+    setLoading(true)
+
     if (!product || !quantity || !value || !recipient || !currency || !target) {
-      alert("All fields are required!");
+      console.log('SALAH')
+      toaster.create({
+        title: `Failed to export. All fields is required`,
+        type: 'error',
+      })
+      setLoading(false);
       return;
     }
-    onNewExport(product, parseInt(quantity, 10), parseFloat(value), recipient, currency, target);
-    setProduct('');
-    setQuantity('');
-    setValue('');
-    setRecipient('');
-    setCurrency('');
-    setTarget('');
+    try {
+      await onNewExport(product, parseInt(quantity, 10), parseFloat(value), recipient, currency, target);
+      setProduct('');
+      setQuantity('');
+      setValue('');
+      setRecipient('');
+      setCurrency('');
+      setTarget('');
+      toaster.create({
+        title: `Item has been exported to recipient`,
+        type: 'success',
+      })
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCurrencyChange = (selectedCurrency) => {
@@ -251,7 +268,7 @@ const AddNewButton = ({ onNewExport }) => {
   };
 
   return (
-    <PopoverRoot>
+    <PopoverRoot id='popover'>
       <PopoverTrigger asChild>
         <Button
           size="sm"
@@ -322,8 +339,9 @@ const AddNewButton = ({ onNewExport }) => {
               _hover={{ bg: "#1a1d33" }}
               onClick={handleExportClick}
             >
-              Export New
+              {loading ? <Spinner size="sm" /> : 'Export New'}
             </Button>
+            <Toaster />
           </Stack>
         </PopoverBody>
         <PopoverCloseTrigger>

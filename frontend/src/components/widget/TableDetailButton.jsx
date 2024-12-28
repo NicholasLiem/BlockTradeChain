@@ -7,7 +7,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 
-const TableDetailButton = ({ itemid, exporttime, importtime, origin, target }) => {
+const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, rate, ratetime }) => {
   return (
     <HoverCardRoot size="lg">
       <HoverCardTrigger asChild>
@@ -28,6 +28,8 @@ const TableDetailButton = ({ itemid, exporttime, importtime, origin, target }) =
                 <DataListItem color='white' key={'importtime'} label={'Import Time'} value={importtime ? importtime : 'Not Confirmed'} />
                 {origin && <DataListItem color='white' key={'origin'} label={'Sent Currency'} value={origin} />}
                 {target && <DataListItem color='white' key={'target'} label={'Recipient Currency'} value={target} />}
+                {rate && <DataListItem color='white' key={'rate'} label={'Conversion Rate'} value={rate} />}
+                {ratetime && <DataListItem color='white' key={'ratetime'} label={'Using Rate on'} value={ratetime} />}
               </DataListRoot>
             </Stack>
           </Stack>
