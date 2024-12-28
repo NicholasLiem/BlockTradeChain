@@ -3,7 +3,7 @@ The traditional management system for the supply chain in importing goods still 
 
 ## System Requirement
 1. It is preferable to use a quad-core (or dual-core hyperthreaded) CPU. Geth is released for a wide range of architectures.
-2. It is recommended to use at least 16GB RAM.
+2. It is recommended to use at least 16GB RAM. <br>
 [Geth Hardware System Requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)
 
 ## How to Run Private Chain
