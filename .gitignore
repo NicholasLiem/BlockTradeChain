@@ -34,6 +34,6 @@ _data/
 blockchainData/
 accounts/
 **/SupplyChain.json
-**/password.txt
-**/start_blockchain.sh
-**/truffle-config.js
+# **/password.txt
+# **/start_blockchain.sh
+# **/truffle-config.js
