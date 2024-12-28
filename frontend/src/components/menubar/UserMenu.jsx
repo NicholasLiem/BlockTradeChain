@@ -15,6 +15,7 @@ const UserMenu = () => {
                 <Flex mt={'10%'} direction={'column'} align={'start'}>
                     <NavigationButton text='Home' path='/' />
                     <NavigationButton text='Inbox' path='/inbox' />
+                    <NavigationButton text='Import' path='/import' />
                     <NavigationButton text='Export' path='/export' />
                     <NavigationButton text='History' path='/history' />
                 </Flex>

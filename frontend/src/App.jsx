@@ -11,6 +11,7 @@ import ExportPage from './components/page/ExportPage'
 import HistoryPage from './components/page/HistoryPage'
 import LoginPage from './components/page/LoginPage'
 import isSessionValid from './util/isSessionValid'
+import ImportPage from './components/page/ImportPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/inbox" element={<InboxPage />} />
+            <Route path="/import" element={<ImportPage />} />
             <Route path="/export" element={<ExportPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/login" element={<LoginPage />} />

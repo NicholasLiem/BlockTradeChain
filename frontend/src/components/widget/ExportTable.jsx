@@ -16,7 +16,6 @@ const ExportTable = ({ data, isLoading }) => {
 
   useEffect(() => {
     const startIndex = (page - 1) * pageSize;
-    console.log(startIndex)
     setVisibleData(data.slice(startIndex, startIndex + pageSize))
   }, [page, data]);
 

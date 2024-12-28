@@ -27,7 +27,8 @@ const ActionButton = ({
     dialogTitle = "Confirm Action?",
     dialogDescription = "Are you sure you want to confirm this item?",
     buttonText = "Confirm",
-    buttonColor = "green"
+    buttonColor = "green",
+    toaster
 }) => {
     const showNotification = useNotification();
     const [loading, setLoading] = useState(false);
@@ -36,24 +37,23 @@ const ActionButton = ({
         setLoading(true);
         try {
             await onAction(transactionHash);
-            showNotification({
-                status: "success",
+            toaster.create({
                 title: `${actionType.charAt(0).toUpperCase() + actionType.slice(1)} Successful`,
-                description: `The item has been successfully ${actionType}ed.`,
-            });
+                type: 'success',
+            })
         } catch (error) {
             console.error(`Error ${actionType}ing item:`, error);
-            showNotification({
-                status: "error",
-                title: `${actionType.charAt(0).toUpperCase() + actionType.slice(1)} Failed`,
-                description: `An error occurred while ${actionType}ing the item.`,
-            });
+            toaster.create({
+                title:  `${actionType.charAt(0).toUpperCase() + actionType.slice(1)} Failed`,
+                type: 'error',
+            })
         } finally {
             setLoading(false);
         }
     };
 
     return (
+        <>
         <HoverCardRoot size="sm">
             <HoverCardTrigger asChild>
                 <Link href="#" color="black">
@@ -67,7 +67,7 @@ const ActionButton = ({
                         <Stack gap="1">
                             <DialogRoot>
                                 <DialogTrigger asChild>
-                                    <Button variant="solid" colorScheme={buttonColor} size="sm">
+                                    <Button variant="solid" colorPalette={buttonColor} size="sm">
                                         {buttonText}
                                     </Button>
                                 </DialogTrigger>
@@ -94,6 +94,7 @@ const ActionButton = ({
                 </Stack>
             </HoverCardContent>
         </HoverCardRoot>
+        </>
     );
 };
 

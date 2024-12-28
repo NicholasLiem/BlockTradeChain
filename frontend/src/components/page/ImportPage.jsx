@@ -10,7 +10,7 @@ import { exportItem, getUserTransactions, getItemDetails } from '../../contracts
 import Cookies from 'js-cookie';
 import { useAuth } from '../../context/AuthContext';
 
-const ExportPage = () => {
+const ImportPage = () => {
   const { walletId, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -95,8 +95,7 @@ const ExportPage = () => {
   return (
     <>
       <Flex justify={'space-between'} width={'100%'} align={'center'}>
-        <PageHeading text={'Export'} />
-        <AddNewButton onNewExport={handleNewExport} />
+        <PageHeading text={'Import'} />
       </Flex>
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
         <SummaryCard value={items.length.toString()} isLoading={isLoading} title="Exports" description="Total export attempts" />
@@ -112,4 +111,4 @@ const ExportPage = () => {
   );
 };
 
-export default ExportPage;
+export default ImportPage;
