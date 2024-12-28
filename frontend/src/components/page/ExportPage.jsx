@@ -58,6 +58,8 @@ const ExportPage = () => {
             value: details.value ? Number(details.value) : 0,
             exportto: item.recipient,
             status: details.status || "Unknown",
+            exchangeRate: details.exchangeRate ? Number(details.exchangeRate) : 0,
+            exchangeRateTimestamp: new Date(Number(details.exchangeRateTimestamp) * 1000).toLocaleString(),
             exportedtime: details.statusTimestamps?.[0]
               ? new Date(Number(details.statusTimestamps[0]) * 1000).toLocaleString()
               : "N/A",
@@ -67,8 +69,8 @@ const ExportPage = () => {
                     Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000
                   ).toLocaleString()
                 : "",
-            origin: details.exporter_currency,
-            target: details.recipient_currency
+            origin: details.exporterCurrency,
+            target: details.recipientCurrency
           };
         })
       );

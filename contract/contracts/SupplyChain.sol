@@ -2,20 +2,27 @@
 pragma solidity ^0.8.0;
 
 contract SupplyChain {
+    struct ExchangeRate {
+        uint256 rate;
+        uint256 timestamp;
+    }
     struct Item {
         string product;
         uint256 qty;
         uint256 value;
         address exporter;
         address recipient; // Original Ethereum wallet
-        string exporter_currency;
-        string recipient_currency;
+        string exporterCurrency;
+        string recipientCurrency;
+        uint256 exchangeRate;
+        uint256 exchangeRateTimestamp;
         string status; // EXPORTED, IMPORTED, CANCELLED
         uint256[] statusTimestamps;
     }
     mapping(bytes32 => Item) private items; // transactionHash => Item
     mapping(address => bytes32[]) private userInbox;
     mapping(address => bytes32[]) private userAssets;
+    mapping(string => mapping(string => ExchangeRate)) public exchangeRates; // fromCurrency => toCurrency => ExchangeRate
     address public oracle;
     uint256 public lastUpdatedTime;
     bytes32[] public transactionHashes;
@@ -28,6 +35,12 @@ contract SupplyChain {
     event StatusUpdated(
         bytes32 indexed transactionHash,
         string newStatus,
+        uint256 timestamp
+    );
+    event ExchangeRateUpdated(
+        string fromCurrency,
+        string toCurrency,
+        uint256 rate,
         uint256 timestamp
     );
     event TimeUpdated(uint256 timestamp);
@@ -63,15 +76,39 @@ contract SupplyChain {
         return userAssets[user];
     }
 
+    function updateExchangeRate(
+        string memory fromCurrency,
+        string memory toCurrency,
+        uint256 rate
+    ) public onlyOracle {
+        exchangeRates[fromCurrency][toCurrency] = ExchangeRate(
+            rate,
+            block.timestamp
+        );
+        emit ExchangeRateUpdated(
+            fromCurrency,
+            toCurrency,
+            rate,
+            block.timestamp
+        );
+    }
+
     function exportItem(
         string memory product,
         uint256 qty,
         uint256 value,
         address recipient,
-        string memory exporter_currency,
-        string memory recipient_currency
+        string memory exporterCurrency,
+        string memory recipientCurrency
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
+
+        // Get the current exchange rate
+        ExchangeRate memory rate = exchangeRates[exporterCurrency][recipientCurrency];
+        if (rate.rate == 0) {
+            rate.rate = 1;
+            rate.timestamp = block.timestamp;
+        }
 
         bytes32 transactionHash = keccak256(
             abi.encodePacked(
@@ -81,8 +118,8 @@ contract SupplyChain {
                 product,
                 qty,
                 value,
-                exporter_currency, 
-                recipient_currency
+                exporterCurrency,
+                recipientCurrency
             )
         );
 
@@ -97,10 +134,12 @@ contract SupplyChain {
         newItem.value = value;
         newItem.exporter = msg.sender;
         newItem.recipient = recipient;
+        newItem.exporterCurrency = exporterCurrency;
+        newItem.recipientCurrency = recipientCurrency;
+        newItem.exchangeRate = rate.rate;
+        newItem.exchangeRateTimestamp = rate.timestamp;
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
-        newItem.exporter_currency = exporter_currency;
-        newItem.recipient_currency = recipient_currency;
 
         addToInbox(recipient, transactionHash);
 
