@@ -4,9 +4,13 @@ import {
   RadioCardRoot,
 } from "@/components/ui/radio-card"
 
-const RadioCard = () => {
+const RadioCard = ({ selectedOption, setSelectedOption }) => {
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
   return (
-    <RadioCardRoot defaultValue="next" width={'100%'}>
+    <RadioCardRoot value={selectedOption} onChange={handleChange} width={'100%'}>
       <Flex justify={'space-between'} gap={'2%'} >
         <RadioCardItem 
             color={'black'}
@@ -26,7 +30,8 @@ const RadioCard = () => {
           />
       </Flex>
     </RadioCardRoot>
-  )
-}
+  );
+};
+
 
 export default RadioCard;
