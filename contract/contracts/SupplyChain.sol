@@ -6,12 +6,13 @@ contract SupplyChain {
         uint256 rate;
         uint256 timestamp;
     }
+
     struct Item {
         string product;
         uint256 qty;
         uint256 value;
         address exporter;
-        address recipient; // Original Ethereum wallet
+        address recipient;
         string exporterCurrency;
         string recipientCurrency;
         uint256 exchangeRate;
@@ -19,23 +20,29 @@ contract SupplyChain {
         string status; // EXPORTED, IMPORTED, CANCELLED
         uint256[] statusTimestamps;
     }
-    mapping(bytes32 => Item) private items; // transactionHash => Item
+
+    // State Variables
+    mapping(bytes32 => Item) private items;
     mapping(address => bytes32[]) private userInbox;
     mapping(address => bytes32[]) private userAssets;
-    mapping(string => mapping(string => ExchangeRate)) public exchangeRates; // fromCurrency => toCurrency => ExchangeRate
+    mapping(string => mapping(string => ExchangeRate)) public exchangeRates;
+
     address public oracle;
     bytes32[] public transactionHashes;
 
+    // Events
     event ItemExported(
         bytes32 indexed transactionHash,
         address indexed exporter,
         address indexed recipient
     );
+
     event StatusUpdated(
         bytes32 indexed transactionHash,
         string newStatus,
         uint256 timestamp
     );
+
     event ExchangeRateUpdated(
         string fromCurrency,
         string toCurrency,
@@ -43,17 +50,15 @@ contract SupplyChain {
         uint256 timestamp
     );
 
+    // Constructor
     constructor() {
         oracle = msg.sender;
     }
 
+    // Modifiers
     modifier onlyOracle() {
         require(msg.sender == oracle, "Not authorized");
         _;
-    }
-
-    function setOracle(address _oracle) public onlyOracle {
-        oracle = _oracle;
     }
 
     modifier onlyOwner(address user) {
@@ -61,15 +66,16 @@ contract SupplyChain {
         _;
     }
 
-    function getInbox(
-        address user
-    ) public view onlyOwner(user) returns (bytes32[] memory) {
+    // Public Functions
+    function setOracle(address _oracle) public onlyOracle {
+        oracle = _oracle;
+    }
+
+    function getInbox(address user) public view onlyOwner(user) returns (bytes32[] memory) {
         return userInbox[user];
     }
 
-    function getAssets(
-        address user
-    ) public view onlyOwner(user) returns (bytes32[] memory) {
+    function getAssets(address user) public view onlyOwner(user) returns (bytes32[] memory) {
         return userAssets[user];
     }
 
@@ -78,25 +84,15 @@ contract SupplyChain {
         string memory toCurrency,
         uint256 rate
     ) public onlyOracle {
-        exchangeRates[fromCurrency][toCurrency] = ExchangeRate(
-            rate,
-            block.timestamp
-        );
-        emit ExchangeRateUpdated(
-            fromCurrency,
-            toCurrency,
-            rate,
-            block.timestamp
-        );
+        exchangeRates[fromCurrency][toCurrency] = ExchangeRate(rate, block.timestamp);
+        emit ExchangeRateUpdated(fromCurrency, toCurrency, rate, block.timestamp);
     }
 
     function getExchangeRate(
         string memory fromCurrency,
         string memory toCurrency
     ) public view returns (uint256 rate, uint256 timestamp) {
-        ExchangeRate memory exchangeRate = exchangeRates[fromCurrency][
-            toCurrency
-        ];
+        ExchangeRate memory exchangeRate = exchangeRates[fromCurrency][toCurrency];
         require(exchangeRate.rate > 0, "Exchange rate not available");
         return (exchangeRate.rate, exchangeRate.timestamp);
     }
@@ -111,57 +107,13 @@ contract SupplyChain {
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
-        uint256 finalRate;
-        uint256 rateTimestamp;
-
-        if (keccak256(bytes(exporterCurrency)) == keccak256(bytes("USD"))) {
-            // Directly use USD to recipientCurrency
-            ExchangeRate memory usdToRecipient = exchangeRates["USD"][
-                recipientCurrency
-            ];
-            if (usdToRecipient.rate > 0) {
-                finalRate = usdToRecipient.rate;
-                rateTimestamp = usdToRecipient.timestamp;
-            }
-        } else {
-            // Calculate via base (USD)
-            ExchangeRate memory baseToExporter = exchangeRates["USD"][
-                exporterCurrency
-            ];
-            ExchangeRate memory baseToRecipient = exchangeRates["USD"][
-                recipientCurrency
-            ];
-
-            if (baseToExporter.rate > 0 && baseToRecipient.rate > 0) {
-                uint256 exporterToBase = 1e18 / baseToExporter.rate;
-                finalRate = (exporterToBase * baseToRecipient.rate) / 1e18;
-                rateTimestamp = block.timestamp;
-            }
-        }
-
-        // Fallback to default rate if no rates are available
-        if (finalRate == 0) {
-            finalRate = 1;
-            rateTimestamp = block.timestamp;
-        }
+        (uint256 finalRate, uint256 rateTimestamp) = calculateExchangeRate(exporterCurrency, recipientCurrency);
 
         bytes32 transactionHash = keccak256(
-            abi.encodePacked(
-                msg.sender,
-                recipient,
-                block.timestamp,
-                product,
-                qty,
-                value,
-                exporterCurrency,
-                recipientCurrency
-            )
+            abi.encodePacked(msg.sender, recipient, block.timestamp, product, qty, value, exporterCurrency, recipientCurrency)
         );
 
-        require(
-            items[transactionHash].exporter == address(0),
-            "Item already exists"
-        );
+        require(items[transactionHash].exporter == address(0), "Item already exists");
 
         Item storage newItem = items[transactionHash];
         newItem.product = product;
@@ -177,7 +129,6 @@ contract SupplyChain {
         newItem.statusTimestamps.push(block.timestamp);
 
         addToInbox(recipient, transactionHash);
-
         transactionHashes.push(transactionHash);
 
         emit ItemExported(transactionHash, msg.sender, recipient);
@@ -186,14 +137,8 @@ contract SupplyChain {
 
     function confirmItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
-        require(
-            item.recipient == msg.sender,
-            "Only the recipient can confirm this item"
-        );
-        require(
-            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
-            "Item is not in EXPORTED status"
-        );
+        require(item.recipient == msg.sender, "Only the recipient can confirm this item");
+        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
 
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
@@ -206,14 +151,8 @@ contract SupplyChain {
 
     function denyItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
-        require(
-            item.recipient == msg.sender,
-            "Only the recipient can deny this item"
-        );
-        require(
-            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
-            "Item is not in EXPORTED status"
-        );
+        require(item.recipient == msg.sender, "Only the recipient can deny this item");
+        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
 
         item.status = "CANCELLED";
         item.statusTimestamps.push(block.timestamp);
@@ -223,25 +162,19 @@ contract SupplyChain {
         emit StatusUpdated(transactionHash, "CANCELLED", block.timestamp);
     }
 
-    function getItemDetails(
-        bytes32 transactionHash
-    ) public view returns (Item memory) {
+    function getItemDetails(bytes32 transactionHash) public view returns (Item memory) {
         Item memory item = items[transactionHash];
         require(item.exporter != address(0), "Item does not exist");
-        require(
-            msg.sender == item.exporter || msg.sender == item.recipient,
-            "Not authorized to view this item's details"
-        );
+        require(msg.sender == item.exporter || msg.sender == item.recipient, "Not authorized to view this item's details");
         return item;
     }
 
+    // Internal Functions
     function addToInbox(address user, bytes32 transactionHash) internal {
-        require(msg.sender == user, "Not authorized to add to this inbox");
         userInbox[user].push(transactionHash);
     }
 
     function removeFromInbox(address user, bytes32 transactionHash) internal {
-        require(msg.sender == user, "Not authorized to remove from this inbox");
         bytes32[] storage inboxList = userInbox[user];
         for (uint256 i = 0; i < inboxList.length; i++) {
             if (inboxList[i] == transactionHash) {
@@ -253,7 +186,25 @@ contract SupplyChain {
     }
 
     function addToAsset(address user, bytes32 transactionHash) internal {
-        require(msg.sender == user, "Not authorized to add to this asset list");
         userAssets[user].push(transactionHash);
+    }
+
+    function calculateExchangeRate(
+        string memory exporterCurrency,
+        string memory recipientCurrency
+    ) internal view returns (uint256 rate, uint256 timestamp) {
+        if (keccak256(bytes(exporterCurrency)) == keccak256(bytes("USD"))) {
+            ExchangeRate memory usdToRecipient = exchangeRates["USD"][recipientCurrency];
+            if (usdToRecipient.rate > 0) return (usdToRecipient.rate, usdToRecipient.timestamp);
+        } else {
+            ExchangeRate memory baseToExporter = exchangeRates["USD"][exporterCurrency];
+            ExchangeRate memory baseToRecipient = exchangeRates["USD"][recipientCurrency];
+
+            if (baseToExporter.rate > 0 && baseToRecipient.rate > 0) {
+                uint256 exporterToBase = 1e18 / baseToExporter.rate;
+                return ((exporterToBase * baseToRecipient.rate) / 1e18, block.timestamp);
+            }
+        }
+        return (1, block.timestamp); // Default rate
     }
 }
