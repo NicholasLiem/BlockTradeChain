@@ -139,3 +139,33 @@ export async function getUserTransactions(userAddress) {
       throw error;
     }
   }
+
+export async function getAllTransactions() {
+    try {
+        const events = await supplyChainContract.getPastEvents('ItemExported' as any, {
+            fromBlock: 0,
+            toBlock: 'latest',
+        });
+
+        const allTransactions = events
+            .filter((event): event is EventLog => typeof event !== 'string')
+            .map((event: EventLog) => {
+                const itemHash = event.returnValues.transactionHash;
+
+                return {
+                    transactionHash: itemHash,
+                    exporter: event.returnValues.exporter,
+                    recipient: event.returnValues.recipient,
+                    product: event.returnValues.product,
+                    qty: event.returnValues.qty,
+                    value: event.returnValues.value,
+                    status: 'EXPORTED',
+                };
+            });
+
+        return allTransactions;
+    } catch (error) {
+        console.error('Error fetching all transactions:', error);
+        throw error;
+    }
+}
