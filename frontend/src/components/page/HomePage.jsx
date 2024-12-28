@@ -21,14 +21,6 @@ const HomePage = () => {
     checkSession();
   }, [navigate]); 
 
-  const {
-    isPopupOpen,
-    setIsPopupOpen,
-    handleSaveDerivedWallet,
-    secret,
-    setSecret,
-  } = useAuth();
-
   return (
     <>
       <Flex 
@@ -61,13 +53,6 @@ const HomePage = () => {
           <InformationCard value="30" title="Confirmed" description="Successful transaction" />
         </Flex>
       </Flex>
-      <Popup
-        isOpen={isPopupOpen}
-        onClose={() => setIsPopupOpen(false)}
-        onSave={handleSaveDerivedWallet}
-        secret={secret}
-        setSecret={setSecret}
-      />
     </>
   );
 };

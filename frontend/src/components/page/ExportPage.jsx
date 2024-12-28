@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 import { useAuth } from '../../context/AuthContext';
 
 const ExportPage = () => {
-  const { walletId, requireDerivedWallet, isAuthenticated } = useAuth();
+  const { walletId, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

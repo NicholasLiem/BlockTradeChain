@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./DerivedWallet.sol";
-
-contract SupplyChain is DerivedWallet {
+contract SupplyChain {
     struct Item {
         string product;
         uint256 qty;
@@ -15,12 +13,22 @@ contract SupplyChain is DerivedWallet {
     }
 
     mapping(bytes32 => Item) private items; // transactionHash => Item
+    mapping(bytes32 => bytes32[]) private userInbox;
+    mapping(bytes32 => bytes32[]) private userAssets;
     address public oracle;
     uint256 public lastUpdatedTime;
     bytes32[] public transactionHashes;
 
-    event ItemExported(bytes32 indexed transactionHash, address indexed exporter, address indexed recipient);
-    event StatusUpdated(bytes32 indexed transactionHash, string newStatus, uint256 timestamp);
+    event ItemExported(
+        bytes32 indexed transactionHash,
+        address indexed exporter,
+        address indexed recipient
+    );
+    event StatusUpdated(
+        bytes32 indexed transactionHash,
+        string newStatus,
+        uint256 timestamp
+    );
     event TimeUpdated(uint256 timestamp);
 
     constructor() {
@@ -41,16 +49,25 @@ contract SupplyChain is DerivedWallet {
         string memory product,
         uint256 qty,
         uint256 value,
-        address recipient,
-        bytes32 derivedWallet
+        address recipient
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
         bytes32 transactionHash = keccak256(
-            abi.encodePacked(msg.sender, recipient, block.timestamp, product, qty, value)
+            abi.encodePacked(
+                msg.sender,
+                recipient,
+                block.timestamp,
+                product,
+                qty,
+                value
+            )
         );
 
-        require(items[transactionHash].exporter == address(0), "Item already exists");
+        require(
+            items[transactionHash].exporter == address(0),
+            "Item already exists"
+        );
 
         Item storage newItem = items[transactionHash];
         newItem.product = product;
@@ -61,7 +78,7 @@ contract SupplyChain is DerivedWallet {
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
 
-        addToInbox(derivedWallet, transactionHash);
+        addToInbox(recipient, transactionHash);
 
         transactionHashes.push(transactionHash);
 
@@ -69,9 +86,14 @@ contract SupplyChain is DerivedWallet {
         return transactionHash;
     }
 
-    function confirmItem(bytes32 transactionHash, bytes32 derivedWallet) public {
+    function confirmItem(
+        bytes32 transactionHash
+    ) public {
         Item storage item = items[transactionHash];
-        require(item.recipient == msg.sender, "Only the recipient can confirm this item");
+        require(
+            item.recipient == msg.sender,
+            "Only the recipient can confirm this item"
+        );
         require(
             keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
             "Item is not in EXPORTED status"
@@ -80,13 +102,15 @@ contract SupplyChain is DerivedWallet {
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
 
-        removeFromInbox(derivedWallet, transactionHash);
-        addToAsset(derivedWallet, transactionHash);
+        removeFromInbox(item.recipient, transactionHash);
+        addToAsset(msg.sender, transactionHash);
 
         emit StatusUpdated(transactionHash, "IMPORTED", block.timestamp);
     }
 
-    function getItemDetails(bytes32 transactionHash) public view returns (Item memory) {
+    function getItemDetails(
+        bytes32 transactionHash
+    ) public view returns (Item memory) {
         Item memory item = items[transactionHash];
         require(item.exporter != address(0), "Item does not exist");
         require(

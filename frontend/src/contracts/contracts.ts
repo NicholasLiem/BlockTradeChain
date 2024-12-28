@@ -9,16 +9,11 @@ export async function exportItem(
     recipient: string,
     account: string
   ): Promise<string> {
-    const derivedWallet = Cookies.get('derivedWallet');
-    if (!derivedWallet) {
-      throw new Error("No derived wallet found in cookies");
-    }
-
-    console.log("Exporting item:", { product, qty, value, recipient, account, derivedWallet });
+    console.log("Exporting item:", { product, qty, value, recipient, account });
 
     const gasPrice = (await web3.eth.getGasPrice()).toString();
     const txReceipt = await supplyChainContract.methods
-      .exportItem(product, qty, value, recipient, derivedWallet)
+      .exportItem(product, qty, value, recipient )
       .send({ from: account, gasPrice });
   
     const itemExportedEvent = txReceipt.events?.ItemExported;

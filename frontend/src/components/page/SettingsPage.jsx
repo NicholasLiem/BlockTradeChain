@@ -26,19 +26,11 @@ const SettingsPage = () => {
 
   const stats = [
     { label: "ID Wallet", value: Cookies.get('walletId') || 'N/A', diff: 12 },
-    {
-      label: "Asset Wallet",
-      value: isWalletVisible
-        ? Cookies.get("derivedWallet") || 'N/A'
-        : "••••••••••••••••••••••••",
-      diff: 12,
-    },
   ];
 
   const handleLogout = async () => {
     Cookies.remove('walletId');
     Cookies.remove('password');
-    Cookies.remove('derivedWallet');
     navigate('/login');
   };
 
