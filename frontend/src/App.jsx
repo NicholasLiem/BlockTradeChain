@@ -9,7 +9,6 @@ import HomePage from './components/page/HomePage'
 import InboxPage from './components/page/InboxPage'
 import ExportPage from './components/page/ExportPage'
 import HistoryPage from './components/page/HistoryPage'
-import SettingsPage from './components/page/SettingsPage'
 import LoginPage from './components/page/LoginPage'
 import isSessionValid from './util/isSessionValid'
 
@@ -46,7 +45,6 @@ function AppContent() {
             <Route path="/inbox" element={<InboxPage />} />
             <Route path="/export" element={<ExportPage />} />
             <Route path="/history" element={<HistoryPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Flex>

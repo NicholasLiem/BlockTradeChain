@@ -229,6 +229,36 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "fromCurrency",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "toCurrency",
+        "type": "string"
+      }
+    ],
+    "name": "getExchangeRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
         "name": "product",
         "type": "string"
       },
@@ -366,36 +396,6 @@
         "internalType": "struct SupplyChain.Item",
         "name": "",
         "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "fromCurrency",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "toCurrency",
-        "type": "string"
-      }
-    ],
-    "name": "getExchangeRate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "rate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",

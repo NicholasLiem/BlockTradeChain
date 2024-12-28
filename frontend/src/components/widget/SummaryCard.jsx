@@ -14,7 +14,7 @@ const SummaryCard = ({ value, title, description, isLoading }) => {
       align={'center'}
       direction={'column'}
     >
-      <Heading size="6xl" color="#262A41" fontWeight="bold" maxW={'30%'}>
+      <Heading size="6xl" color="#262A41" fontWeight="bold">
         {isLoading ? 0 : value}
       </Heading>
       <Text fontSize="xl" color="#262A41" fontWeight="semibold" mb="2">

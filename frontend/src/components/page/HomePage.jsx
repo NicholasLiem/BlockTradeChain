@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, Button } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
-import Popup from '../ui/popup';
-import { useAuth } from '../../context/AuthContext';
+import Cookies from 'js-cookie';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,6 +20,12 @@ const HomePage = () => {
     checkSession();
   }, [navigate]); 
 
+  const handleLogout = async () => {
+    Cookies.remove('walletId');
+    Cookies.remove('password');
+    navigate('/login');
+  };
+
   return (
     <>
       <Flex 
@@ -31,7 +36,16 @@ const HomePage = () => {
         minHeight="80px"
       >
         <PageHeading text={'Welcome back! Let’s track your shipments.'} />
-        <Flex align="center">
+        <Button
+            backgroundColor={'#262A41'}
+            color={'white'}
+            onClick={handleLogout}
+          >
+            Logout
+        </Button>
+      </Flex>
+      <Text color={'gray.500'}>Wallet ID: {Cookies.get('walletId')}</Text>
+      <Flex align="center">
           <Text fontSize="4xl" fontWeight="bold" color="#262A41" mr="2">
             {23.59}
           </Text>
@@ -39,8 +53,6 @@ const HomePage = () => {
             (GMT+7)
           </Text>
         </Flex>
-      </Flex>
-
       <Flex mt="2%" gap="2%" justify="center" wrap="wrap" width="100%">
         <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
           <InformationCard value="1" title="Transactions" description="Total transactions" />
