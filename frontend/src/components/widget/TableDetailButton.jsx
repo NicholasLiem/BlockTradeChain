@@ -28,7 +28,7 @@ const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, rat
                 <DataListItem color='white' key={'importtime'} label={'Import Time'} value={importtime ? importtime : 'Not Confirmed'} />
                 {origin && <DataListItem color='white' key={'origin'} label={'Sent Currency'} value={origin} />}
                 {target && <DataListItem color='white' key={'target'} label={'Recipient Currency'} value={target} />}
-                {rate && <DataListItem color='white' key={'rate'} label={'Conversion Rate'} value={rate} />}
+                {rate && <DataListItem color='white' key={'rate'} label={'Conversion Rate'} value={Number(rate / 1e6).toFixed(6)} />}
                 {ratetime && <DataListItem color='white' key={'ratetime'} label={'Using Rate on'} value={ratetime} />}
               </DataListRoot>
             </Stack>
