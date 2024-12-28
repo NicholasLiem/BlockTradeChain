@@ -7,13 +7,15 @@ export async function exportItem(
   qty: number,
   value: number,
   recipient: string,
-  account: string
+  account: string,
+  origin: string,
+  target: string
 ): Promise<string> {
-  console.log("Exporting item:", { product, qty, value, recipient, account });
+  console.log("Exporting item:", { product, qty, value, recipient, account, origin, target });
 
   const gasPrice = (await web3.eth.getGasPrice()).toString();
   const txReceipt = await supplyChainContract.methods
-    .exportItem(product, qty, value, recipient)
+    .exportItem(product, qty, value, recipient, origin, target)
     .send({ from: account, gasPrice });
 
   const itemExportedEvent = txReceipt.events?.ItemExported;
@@ -86,11 +88,8 @@ export async function getUserTransactions(userAddress) {
 
     // Map each event to an object
     const allTransactions = allEvents.filter((event): event is EventLog => typeof event !== 'string').map((event: EventLog) => {
-      // This is the item hash from the contract's event, not the blockchain transaction
       const itemHash = event.returnValues.transactionHash;
 
-      // If your event only has (transactionHash, exporter, recipient),
-      // do not attempt to read product, qty, or value here.
       return {
         transactionHash: itemHash,
         exporter: event.returnValues.exporter,
@@ -98,12 +97,16 @@ export async function getUserTransactions(userAddress) {
         product: event.returnValues.product,
         qty: event.returnValues.qty,
         value: event.returnValues.value,
-
         status: 'EXPORTED',
       };
     });
 
-    return allTransactions;
+    // Remove duplicates by using the transactionHash as a unique key
+    const uniqueTransactions = Array.from(
+      new Map(allTransactions.map((item) => [item.transactionHash, item])).values()
+    );
+
+    return uniqueTransactions;
   } catch (error) {
     console.error('Error fetching user transactions:', error);
     throw error;

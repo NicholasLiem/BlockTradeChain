@@ -5,6 +5,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination"
+import TableDetailButton from "./TableDetailButton";
 
 const ExportTable = ({data}) => {
   return (
@@ -15,8 +16,7 @@ const ExportTable = ({data}) => {
             <Table.ColumnHeader>Product</Table.ColumnHeader>
             <Table.ColumnHeader>Qty</Table.ColumnHeader>
             <Table.ColumnHeader>Exported To</Table.ColumnHeader>
-            <Table.ColumnHeader>Exported Time</Table.ColumnHeader>
-            <Table.ColumnHeader>Confirmed Time</Table.ColumnHeader>
+            <Table.ColumnHeader>Details</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -25,8 +25,7 @@ const ExportTable = ({data}) => {
               <Table.Cell >{item.product}</Table.Cell>
               <Table.Cell>{item.qty}</Table.Cell>
               <Table.Cell>{item.exportto}</Table.Cell>
-              <Table.Cell>{item.exportedtime}</Table.Cell>
-              <Table.Cell>{item.confirmedtime == '' ? 'Not Confirmed' : item.confirmedtime}</Table.Cell>
+              <Table.Cell><TableDetailButton itemid={item.id} exporttime={item.exportedtime} importtime={item.confirmedtime} origin={item.origin} target={item.target}/></Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

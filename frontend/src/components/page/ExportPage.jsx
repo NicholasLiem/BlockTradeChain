@@ -66,6 +66,8 @@ const ExportPage = () => {
                     Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000
                   ).toLocaleString()
                 : "",
+            origin: details.exporter_currency,
+            target: details.recipient_currency
           };
         })
       );
@@ -78,10 +80,10 @@ const ExportPage = () => {
     }
   };
 
-  const handleNewExport = async (product, qty, value, recipient) => {
+  const handleNewExport = async (product, qty, value, recipient, origin, target) => {
     try {
       const account = Cookies.get("walletId");
-      const transactionHash = await exportItem(product, qty, value, recipient, account);
+      const transactionHash = await exportItem(product, qty, value, recipient, account, origin, target);
       console.log("Exported item transaction hash:", transactionHash);
       fetchExportData();
     } catch (error) {
