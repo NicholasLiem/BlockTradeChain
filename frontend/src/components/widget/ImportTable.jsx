@@ -6,9 +6,9 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination";
-import ConfirmButton from "./ConfirmButton";
+import ActionButton from "./ActionButton";
 
-const ImportTable = ({ data, onConfirm }) => {
+const ImportTable = ({ data, onConfirm, onDeny }) => {
   return (
     <Stack width="full" gap="5">
       <Table.Root size="sm" variant="outline" borderRadius={"lg"}>
@@ -46,10 +46,28 @@ const ImportTable = ({ data, onConfirm }) => {
                 {item.confirmedTime ? (
                   "Confirmed"
                 ) : (
-                  <ConfirmButton
-                    transactionHash={item.transactionHash}
-                    onConfirm={onConfirm}
-                  />
+                  <Stack direction="row" spacing={2}>
+                    <ActionButton
+                      transactionHash={item.transactionHash}
+                      onAction={onConfirm}
+                      actionType="confirm"
+                      triggerText="Click to Confirm"
+                      dialogTitle="Import Goods?"
+                      dialogDescription="Are you sure you want to import this item?"
+                      buttonText="Confirm"
+                      buttonColor="green"
+                    />
+                    <ActionButton
+                      transactionHash={item.transactionHash}
+                      onAction={onDeny}
+                      actionType="deny"
+                      triggerText="Click to Deny"
+                      dialogTitle="Deny Import?"
+                      dialogDescription="Are you sure you want to deny importing this item?"
+                      buttonText="Deny"
+                      buttonColor="red"
+                    />
+                  </Stack>
                 )}
               </Table.Cell>
             </Table.Row>

@@ -1,4 +1,4 @@
-export interface InboxItem {
+export interface ExportItem {
     transactionHash: string;
     product: string;
     qty: BigInt;

@@ -122,6 +122,25 @@ contract SupplyChain {
         emit StatusUpdated(transactionHash, "IMPORTED", block.timestamp);
     }
 
+    function denyItem(bytes32 transactionHash) public {
+        Item storage item = items[transactionHash];
+        require(
+            item.recipient == msg.sender,
+            "Only the recipient can deny this item"
+        );
+        require(
+            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
+            "Item is not in EXPORTED status"
+        );
+
+        item.status = "CANCELLED";
+        item.statusTimestamps.push(block.timestamp);
+
+        removeFromInbox(item.recipient, transactionHash);
+
+        emit StatusUpdated(transactionHash, "CANCELLED", block.timestamp);
+    }
+
     function getItemDetails(
         bytes32 transactionHash
     ) public view returns (Item memory) {
