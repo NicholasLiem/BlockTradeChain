@@ -32,7 +32,7 @@ const TableDetailButton = ({ itemid, exporttime, importtime, origin, target, exc
                   color="white"
                   key="exchangeRate"
                   label="Exchange Rate"
-                  value={(Number(exchangeRate) / 1e18).toFixed(12)}
+                  value={(Number(exchangeRate) / 1e6).toFixed(6)}
                 />
                 <DataListItem color='white' key={'exchangeRateTimestamp'} label={'Exchange Rate TS'} value={exchangeRateTimestamp} />
               </DataListRoot>

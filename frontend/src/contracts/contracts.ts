@@ -174,39 +174,15 @@ export async function getInbox(walletId: string): Promise<ExportItem[]> {
   }
 }
 
-export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<number> {
+export async function getExchangeRate(fromCurrency: string, toCurrency: string): Promise<ExchangeRate> {
   try {
-    const exchangeRate = await supplyChainContract.methods
+    const exchangeRate: ExchangeRate = await supplyChainContract.methods
       .getExchangeRate(fromCurrency, toCurrency)
       .call();
-    return Number(exchangeRate);
+
+    return exchangeRate;
   } catch (error) {
     console.error('Error fetching exchange rate:', error);
     throw new Error('Failed to fetch exchange rate.');
-  }
-}
-
-export async function fetchExchangeRateEvents() {
-  try {
-    const events = await supplyChainContract.getPastEvents('ExchangeRateUpdated' as any, {
-      fromBlock: 0,
-      toBlock: 'latest',
-    });
-
-    console.log('Exchange rate events:', events);
-
-    events
-      .filter((event): event is EventLog => typeof event !== 'string')
-      .forEach(event => {
-        const { fromCurrency, toCurrency, rate, timestamp } = event.returnValues;
-        console.log(`Event Details: 
-          From: ${fromCurrency}, 
-          To: ${toCurrency}, 
-          Rate: ${rate}, 
-          Timestamp: ${new Date(Number(timestamp) * 1000).toLocaleString()}`
-        );
-      });
-  } catch (error) {
-    console.error('Error fetching events:', error);
   }
 }
