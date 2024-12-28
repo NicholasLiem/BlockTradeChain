@@ -8,6 +8,8 @@ contract SupplyChain {
         uint256 value;
         address exporter;
         address recipient; // Original Ethereum wallet
+        string exporter_currency;
+        string recipient_currency;
         string status; // EXPORTED, IMPORTED, CANCELLED
         uint256[] statusTimestamps;
     }
@@ -65,7 +67,9 @@ contract SupplyChain {
         string memory product,
         uint256 qty,
         uint256 value,
-        address recipient
+        address recipient,
+        string memory exporter_currency,
+        string memory recipient_currency
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
@@ -76,7 +80,9 @@ contract SupplyChain {
                 block.timestamp,
                 product,
                 qty,
-                value
+                value,
+                exporter_currency, 
+                recipient_currency
             )
         );
 
@@ -93,6 +99,8 @@ contract SupplyChain {
         newItem.recipient = recipient;
         newItem.status = "EXPORTED";
         newItem.statusTimestamps.push(block.timestamp);
+        newItem.exporter_currency = exporter_currency;
+        newItem.recipient_currency = recipient_currency;
 
         addToInbox(recipient, transactionHash);
 
