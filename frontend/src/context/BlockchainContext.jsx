@@ -27,10 +27,6 @@ export const BlockchainProvider = ({ children }) => {
         initialize();
     }, []);
 
-    useEffect(() => {
-        console.log(accounts);
-    }, [accounts]);
-
     return (
         <BlockchainContext.Provider value={{ web3, supplyChainContract, accounts, isReady }}>
             {children}

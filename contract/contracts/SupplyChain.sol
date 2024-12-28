@@ -11,10 +11,9 @@ contract SupplyChain {
         string status; // EXPORTED, IMPORTED, CANCELLED
         uint256[] statusTimestamps;
     }
-
     mapping(bytes32 => Item) private items; // transactionHash => Item
-    mapping(bytes32 => bytes32[]) private userInbox;
-    mapping(bytes32 => bytes32[]) private userAssets;
+    mapping(address => bytes32[]) private userInbox;
+    mapping(address => bytes32[]) private userAssets;
     address public oracle;
     uint256 public lastUpdatedTime;
     bytes32[] public transactionHashes;
@@ -43,6 +42,23 @@ contract SupplyChain {
 
     function setOracle(address _oracle) public onlyOracle {
         oracle = _oracle;
+    }
+
+    modifier onlyOwner(address user) {
+        require(msg.sender == user, "Not authorized");
+        _;
+    }
+
+    function getInbox(
+        address user
+    ) public view onlyOwner(user) returns (bytes32[] memory) {
+        return userInbox[user];
+    }
+
+    function getAssets(
+        address user
+    ) public view onlyOwner(user) returns (bytes32[] memory) {
+        return userAssets[user];
     }
 
     function exportItem(
@@ -86,9 +102,7 @@ contract SupplyChain {
         return transactionHash;
     }
 
-    function confirmItem(
-        bytes32 transactionHash
-    ) public {
+    function confirmItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
         require(
             item.recipient == msg.sender,
@@ -118,6 +132,28 @@ contract SupplyChain {
             "Not authorized to view this item's details"
         );
         return item;
+    }
+
+    function addToInbox(address user, bytes32 transactionHash) internal {
+        require(msg.sender == user, "Not authorized to add to this inbox");
+        userInbox[user].push(transactionHash);
+    }
+
+    function removeFromInbox(address user, bytes32 transactionHash) internal {
+        require(msg.sender == user, "Not authorized to remove from this inbox");
+        bytes32[] storage inboxList = userInbox[user];
+        for (uint256 i = 0; i < inboxList.length; i++) {
+            if (inboxList[i] == transactionHash) {
+                inboxList[i] = inboxList[inboxList.length - 1];
+                inboxList.pop();
+                break;
+            }
+        }
+    }
+
+    function addToAsset(address user, bytes32 transactionHash) internal {
+        require(msg.sender == user, "Not authorized to add to this asset list");
+        userAssets[user].push(transactionHash);
     }
 
     function updateTime() public onlyOracle {
