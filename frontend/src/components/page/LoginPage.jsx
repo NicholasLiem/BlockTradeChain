@@ -3,7 +3,7 @@ import PageHeading from '../widget/PageHeading';
 import { Button, Fieldset, Flex, Input, Stack } from "@chakra-ui/react"
 import { Field } from "@/components/ui/field"
 import { useNavigate } from 'react-router-dom';
-import { web3 } from '../../web3';
+import { web3 } from '../../util/web3';
 import Cookies from 'js-cookie';
 import isSessionValid from '../../util/isSessionValid';
 
@@ -26,10 +26,6 @@ const LoginPage = () => {
     const handleLoginClick = async () => {
         try {
             handleMetamask()
-            //   const newAccount = web3.eth.accounts.create();
-
-            // // console.log('New Account Address:', newAccount.address);
-            // // console.log('New Account Private Key:', newAccount.privateKey);
             await web3.eth.personal.unlockAccount(walletId, password, 5);
             Cookies.set('walletId', walletId);
             Cookies.set('password', password);
@@ -51,7 +47,8 @@ const LoginPage = () => {
                     setError('Failed to add the token to Metamask. Please try again.');
                 }
             }
-            navigate('/');
+            console.log('login sucessful')
+            navigate('/'); 
         } catch (err) {
             setError(`Invalid Wallet ID or Password`);
         }

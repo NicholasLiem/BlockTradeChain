@@ -5,7 +5,7 @@ const InformationCard = ({ value, title, description }) => {
   return (
     <Box
       width="100%"
-      maxWidth="300px"
+      maxWidth="50vw"
       bg="white"
       borderRadius="xl"
       boxShadow="md"

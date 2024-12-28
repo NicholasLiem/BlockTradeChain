@@ -4,6 +4,8 @@ import PageHeading from '../widget/PageHeading';
 import InformationCard from '../widget/InformationCard';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
+import Popup from '../ui/popup';
+import { useAuth } from '../../context/AuthContext';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,6 +20,14 @@ const HomePage = () => {
 
     checkSession();
   }, [navigate]); 
+
+  const {
+    isPopupOpen,
+    setIsPopupOpen,
+    handleSaveDerivedWallet,
+    secret,
+    setSecret,
+  } = useAuth();
 
   return (
     <>
@@ -51,6 +61,13 @@ const HomePage = () => {
           <InformationCard value="30" title="Confirmed" description="Successful transaction" />
         </Flex>
       </Flex>
+      <Popup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onSave={handleSaveDerivedWallet}
+        secret={secret}
+        setSecret={setSecret}
+      />
     </>
   );
 };

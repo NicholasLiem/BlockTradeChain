@@ -1,4 +1,4 @@
-import { web3 } from '../web3';
+import { web3 } from './web3';
 import Cookies from 'js-cookie';
 
 const isSessionValid = async () => {

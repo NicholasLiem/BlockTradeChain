@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { web3 } from "../web3";
+import { web3 } from "../util/web3";
 
 const AuthContext = createContext();
 

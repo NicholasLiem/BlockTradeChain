@@ -1,4 +1,4 @@
-import { supplyChainContract, web3 } from '../web3';
+import { supplyChainContract, web3 } from '../util/web3';
 import type { EventLog } from 'web3';
 import Cookies from 'js-cookie';
 

@@ -5,10 +5,13 @@ import PageHeading from '../widget/PageHeading';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { web3 } from '../../util/web3';
+import { useBlockchain } from '../../context/BlockchainContext';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
   const [isWalletVisible, setIsWalletVisible] = useState(false); // Visibility state for the derived wallet
+  const { accounts } = useBlockchain()
 
   useEffect(() => {
     const checkSession = async () => {
@@ -18,7 +21,7 @@ const SettingsPage = () => {
       }
     };
 
-    checkSession();
+    checkSession();    
   }, [navigate]);
 
   const stats = [

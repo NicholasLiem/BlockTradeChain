@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { web3, supplyChainContract } from '../web3';
+import { web3, supplyChainContract } from '../util/web3';
 
 // Blockchain Context
 const BlockchainContext = createContext({
@@ -17,15 +17,19 @@ export const BlockchainProvider = ({ children }) => {
     useEffect(() => {
         async function initialize() {
             try {
-                const accounts = await web3.eth.getAccounts();
-                setAccounts(accounts);
+                const account = await web3.eth.getAccounts();
+                setAccounts(account);
                 setIsReady(true);
             } catch (err) {
-                console.error('Error initializing blockchain connection:', err);
+                console.log('Error initializing blockchain connection:', err);
             }
         }
         initialize();
     }, []);
+
+    useEffect(() => {
+        console.log(accounts);
+    }, [accounts]);
 
     return (
         <BlockchainContext.Provider value={{ web3, supplyChainContract, accounts, isReady }}>
