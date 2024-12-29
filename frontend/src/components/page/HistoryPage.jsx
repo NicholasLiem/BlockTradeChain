@@ -78,7 +78,7 @@ const HistoryPage = () => {
     <>
       <PageHeading text="History" />
       <Flex my="2%" gap="1%" justify="space-between" width="100%">
-      <RadioCard selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
+        <RadioCard selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
       </Flex>
       <HistoryTable data={data} isLoading={loading}/>
     </>

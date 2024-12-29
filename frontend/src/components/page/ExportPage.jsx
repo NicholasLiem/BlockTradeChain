@@ -8,10 +8,8 @@ import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
 import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
 import Cookies from 'js-cookie';
-import { useAuth } from '../../context/AuthContext';
 
 const ExportPage = () => {
-  const { walletId, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
