@@ -23,9 +23,9 @@ Here's a quick explanation on how to integrate and deploy the oracle into the pr
 [How to integrate and deploy oracle to private chain and smart contract (Click Me!)](./oracle/README.md)
 
 ## Project Report
-Here's the link for the project report
+Here's the link for the project report <br>
 [Project Report Link](./docs/BlockTradeChain_Report.pdf)
 
 ## Video Snippet
-Here's the link for the video snipper
+Here's the link for the video snippet <br>
 [Video Snippet Link]()
