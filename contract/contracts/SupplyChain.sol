@@ -71,11 +71,15 @@ contract SupplyChain {
         oracle = _oracle;
     }
 
-    function getInbox(address user) public view onlyOwner(user) returns (bytes32[] memory) {
+    function getInbox(
+        address user
+    ) public view onlyOwner(user) returns (bytes32[] memory) {
         return userInbox[user];
     }
 
-    function getAssets(address user) public view onlyOwner(user) returns (bytes32[] memory) {
+    function getAssets(
+        address user
+    ) public view onlyOwner(user) returns (bytes32[] memory) {
         return userAssets[user];
     }
 
@@ -84,17 +88,53 @@ contract SupplyChain {
         string memory toCurrency,
         uint256 rate
     ) public onlyOracle {
-        exchangeRates[fromCurrency][toCurrency] = ExchangeRate(rate, block.timestamp);
-        emit ExchangeRateUpdated(fromCurrency, toCurrency, rate, block.timestamp);
+        exchangeRates[fromCurrency][toCurrency] = ExchangeRate(
+            rate,
+            block.timestamp
+        );
+        emit ExchangeRateUpdated(
+            fromCurrency,
+            toCurrency,
+            rate,
+            block.timestamp
+        );
     }
 
     function getExchangeRate(
         string memory fromCurrency,
         string memory toCurrency
     ) public view returns (uint256 rate, uint256 timestamp) {
-        ExchangeRate memory exchangeRate = exchangeRates[fromCurrency][toCurrency];
-        require(exchangeRate.rate > 0, "Exchange rate not available");
-        return (exchangeRate.rate, exchangeRate.timestamp);
+        if (keccak256(bytes(fromCurrency)) == keccak256(bytes("USD"))) {
+            ExchangeRate memory usdToRecipient = exchangeRates["USD"][
+                toCurrency
+            ];
+            require(usdToRecipient.rate > 0, "Exchange rate not available");
+            return (usdToRecipient.rate, usdToRecipient.timestamp);
+        } else if (keccak256(bytes(toCurrency)) == keccak256(bytes("USD"))) {
+            ExchangeRate memory baseToExporter = exchangeRates["USD"][
+                fromCurrency
+            ];
+            require(baseToExporter.rate > 0, "Exchange rate not available");
+            return (1e18 / baseToExporter.rate, baseToExporter.timestamp); // Convert to USD
+        } else {
+            ExchangeRate memory baseToExporter = exchangeRates["USD"][
+                fromCurrency
+            ];
+            ExchangeRate memory baseToRecipient = exchangeRates["USD"][
+                toCurrency
+            ];
+
+            require(
+                baseToExporter.rate > 0 && baseToRecipient.rate > 0,
+                "Exchange rate not available"
+            );
+
+            uint256 exporterToBase = 1e18 / baseToExporter.rate; // Convert to USD
+            return (
+                (exporterToBase * baseToRecipient.rate) / 1e18,
+                block.timestamp
+            );
+        }
     }
 
     function exportItem(
@@ -107,13 +147,28 @@ contract SupplyChain {
     ) public returns (bytes32) {
         require(recipient != address(0), "Recipient address cannot be zero");
 
-        (uint256 finalRate, uint256 rateTimestamp) = calculateExchangeRate(exporterCurrency, recipientCurrency);
-
-        bytes32 transactionHash = keccak256(
-            abi.encodePacked(msg.sender, recipient, block.timestamp, product, qty, value, exporterCurrency, recipientCurrency)
+        (uint256 finalRate, uint256 rateTimestamp) = calculateExchangeRate(
+            exporterCurrency,
+            recipientCurrency
         );
 
-        require(items[transactionHash].exporter == address(0), "Item already exists");
+        bytes32 transactionHash = keccak256(
+            abi.encodePacked(
+                msg.sender,
+                recipient,
+                block.timestamp,
+                product,
+                qty,
+                value,
+                exporterCurrency,
+                recipientCurrency
+            )
+        );
+
+        require(
+            items[transactionHash].exporter == address(0),
+            "Item already exists"
+        );
 
         Item storage newItem = items[transactionHash];
         newItem.product = product;
@@ -137,8 +192,14 @@ contract SupplyChain {
 
     function confirmItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
-        require(item.recipient == msg.sender, "Only the recipient can confirm this item");
-        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
+        require(
+            item.recipient == msg.sender,
+            "Only the recipient can confirm this item"
+        );
+        require(
+            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
+            "Item is not in EXPORTED status"
+        );
 
         item.status = "IMPORTED";
         item.statusTimestamps.push(block.timestamp);
@@ -151,8 +212,14 @@ contract SupplyChain {
 
     function denyItem(bytes32 transactionHash) public {
         Item storage item = items[transactionHash];
-        require(item.recipient == msg.sender, "Only the recipient can deny this item");
-        require(keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")), "Item is not in EXPORTED status");
+        require(
+            item.recipient == msg.sender,
+            "Only the recipient can deny this item"
+        );
+        require(
+            keccak256(bytes(item.status)) == keccak256(bytes("EXPORTED")),
+            "Item is not in EXPORTED status"
+        );
 
         item.status = "CANCELLED";
         item.statusTimestamps.push(block.timestamp);
@@ -162,10 +229,15 @@ contract SupplyChain {
         emit StatusUpdated(transactionHash, "CANCELLED", block.timestamp);
     }
 
-    function getItemDetails(bytes32 transactionHash) public view returns (Item memory) {
+    function getItemDetails(
+        bytes32 transactionHash
+    ) public view returns (Item memory) {
         Item memory item = items[transactionHash];
         require(item.exporter != address(0), "Item does not exist");
-        require(msg.sender == item.exporter || msg.sender == item.recipient, "Not authorized to view this item's details");
+        require(
+            msg.sender == item.exporter || msg.sender == item.recipient,
+            "Not authorized to view this item's details"
+        );
         return item;
     }
 
@@ -194,15 +266,25 @@ contract SupplyChain {
         string memory recipientCurrency
     ) internal view returns (uint256 rate, uint256 timestamp) {
         if (keccak256(bytes(exporterCurrency)) == keccak256(bytes("USD"))) {
-            ExchangeRate memory usdToRecipient = exchangeRates["USD"][recipientCurrency];
-            if (usdToRecipient.rate > 0) return (usdToRecipient.rate, usdToRecipient.timestamp);
+            ExchangeRate memory usdToRecipient = exchangeRates["USD"][
+                recipientCurrency
+            ];
+            if (usdToRecipient.rate > 0)
+                return (usdToRecipient.rate, usdToRecipient.timestamp);
         } else {
-            ExchangeRate memory baseToExporter = exchangeRates["USD"][exporterCurrency];
-            ExchangeRate memory baseToRecipient = exchangeRates["USD"][recipientCurrency];
+            ExchangeRate memory baseToExporter = exchangeRates["USD"][
+                exporterCurrency
+            ];
+            ExchangeRate memory baseToRecipient = exchangeRates["USD"][
+                recipientCurrency
+            ];
 
             if (baseToExporter.rate > 0 && baseToRecipient.rate > 0) {
                 uint256 exporterToBase = 1e18 / baseToExporter.rate;
-                return ((exporterToBase * baseToRecipient.rate) / 1e18, block.timestamp);
+                return (
+                    (exporterToBase * baseToRecipient.rate) / 1e18,
+                    block.timestamp
+                );
             }
         }
         return (1, block.timestamp); // Default rate
