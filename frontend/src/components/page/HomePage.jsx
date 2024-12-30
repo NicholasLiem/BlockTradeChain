@@ -1,23 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Flex, Text, Button } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import SummaryCard from '../widget/SummaryCard';
 import isSessionValid from '../../util/isSessionValid';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { getAllTransactions, getItemDetails } from '../../contracts/contracts';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
-        var status = await isSessionValid()
+    const initializePage = async () => {
+      try {
+        // Check session validity
+        const status = await isSessionValid();
         if (!status) {
-            navigate('/login');
+          navigate('/login');
+          return;
         }
+
+        // Fetch data
+        await fetchExportData();
+        console.log("Initialization complete.");
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
     };
 
-    checkSession();
+    initializePage();
   }, [navigate]); 
 
   const handleLogout = async () => {
@@ -25,6 +38,50 @@ const HomePage = () => {
     Cookies.remove('password');
     navigate('/login');
   };
+
+  const fetchExportData = async () => {
+    setIsLoading(true);
+    try {
+      const account = Cookies.get("walletId");
+      if (!account) throw new Error("Wallet ID is not set");
+
+      const allItems = await getAllTransactions();
+
+      const detailedItems = await Promise.all(
+        allItems.map(async (item) => {
+          const details = await getItemDetails(item.transactionHash, account);
+          return {
+            id: item.transactionHash,
+            product: details.product || "Unknown",
+            qty: details.qty ? Number(details.qty) : 0,
+            value: details.value ? Number(details.value) : 0,
+            exporter: item.exporter,
+            exportto: item.recipient,
+            status: details.status || "Unknown",
+            exchangeRate: details.exchangeRate ? Number(details.exchangeRate) : 0,
+            exchangeRateTimestamp: new Date(Number(details.exchangeRateTimestamp) * 1000).toLocaleString(),
+            exportedtime: details.statusTimestamps?.[0]
+              ? new Date(Number(details.statusTimestamps[0]) * 1000).toLocaleString()
+              : "N/A",
+            confirmedtime:
+              details.status === "IMPORTED" && details.statusTimestamps?.length > 1
+                ? new Date(
+                    Number(details.statusTimestamps[details.statusTimestamps.length - 1]) * 1000
+                  ).toLocaleString()
+                : "",
+            origin: details.exporterCurrency,
+            target: details.recipientCurrency,
+          };
+        })
+      );
+
+      setItems(detailedItems);
+    } catch (error) {
+      console.error("Error fetching export data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
@@ -48,15 +105,14 @@ const HomePage = () => {
         <Flex direction={'column'} align={'center'} justify={'center'} height={'100%'}>
         <Flex mt="2%" gap="2%" justify="center" wrap="wrap" width="100%">
           <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
-            <SummaryCard value="23.59" title="Current Time" description="GMT+7" />
-            <SummaryCard value="1" title="Inbox" description="Total transactions" />
-            <SummaryCard value="1" title="Imported" description="Goods arrived to be imported" />
+            <SummaryCard value={items.filter(item => item.exportto.toString().toLowerCase() == Cookies.get('walletId') && item.status == "EXPORTED").length.toString()} isLoading={isLoading} title="Inbox" description="Total goods in Inbox" />
+            <SummaryCard value={items.filter(item => item.exportto.toString().toLowerCase() == Cookies.get('walletId') && item.status == "IMPORTED").length.toString()} isLoading={isLoading} title="Imported" description="Number of goods imported" />
           </Flex>
 
           <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
-            <SummaryCard value="30" title="Export Departed" description="Confirmed Imported Goods" />
-            <SummaryCard value="1" title="Export Confirmed" description="Goods exported" />
-            <SummaryCard value="30" title="Export Cancelled" description="Successful transaction" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'EXPORTED').length.toString()} isLoading={isLoading} title="Export Departed" description="Confirmed Imported Goods" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'IMPORTED').length.toString()} isLoading={isLoading} title="Export Confirmed" description="Goods exported" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'CANCELLED').length.toString()} isLoading={isLoading} title="Export Cancelled" description="Successful transaction" />
           </Flex>
         </Flex>
       </Flex>

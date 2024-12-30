@@ -74,11 +74,8 @@ const AddNewButton = ({ onNewExport }) => {
       setRecipient('');
       setCurrency('');
       setTarget('');
-      toaster.create({
-        title: `Item has been exported to recipient`,
-        type: 'success',
-      })
-    } finally {
+    } catch {
+    }finally {
       setLoading(false);
     }
   };

@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Text } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading.jsx';
 import SummaryCard from '../widget/SummaryCard.jsx';
-import ExportTable from '../widget/ExportTable.jsx';
+import ImportTable from '../widget/ImportTable.jsx';
 import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
-import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
+import { getImports, getItemDetails } from '../../contracts/contracts';
 import Cookies from 'js-cookie';
-import { useAuth } from '../../context/AuthContext';
 
 const ImportPage = () => {
-  const { walletId, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +41,7 @@ const ImportPage = () => {
       const account = Cookies.get("walletId");
       if (!account) throw new Error("Wallet ID is not set");
 
-      const exportedItems = await getUserTransactions(account);
+      const exportedItems = await getImports(account);
       console.log("Exported items:", exportedItems);
 
       const detailedItems = await Promise.all(
@@ -54,7 +52,7 @@ const ImportPage = () => {
             product: details.product || "Unknown",
             qty: details.qty ? Number(details.qty) : 0,
             value: details.value ? Number(details.value) : 0,
-            exportto: item.recipient,
+            exporter: item.exporter,
             status: details.status || "Unknown",
             exchangeRate: details.exchangeRate ? Number(details.exchangeRate) : 0,
             exchangeRateTimestamp: new Date(Number(details.exchangeRateTimestamp) * 1000).toLocaleString(),
@@ -73,22 +71,12 @@ const ImportPage = () => {
         })
       );
 
-      setItems(detailedItems);
+      const importedItems = detailedItems.filter((item) => item.status === "IMPORTED");
+      setItems(importedItems);
     } catch (error) {
       console.error("Error fetching export data:", error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleNewExport = async (product, qty, value, recipient, origin, target) => {
-    try {
-      const account = Cookies.get("walletId");
-      const transactionHash = await exportItem(product, qty, value, recipient, account, origin, target);
-      console.log("Exported item transaction hash:", transactionHash);
-      fetchExportData();
-    } catch (error) {
-      console.error("Failed to export item:", error);
     }
   };
 
@@ -98,15 +86,13 @@ const ImportPage = () => {
         <PageHeading text={'Import'} />
       </Flex>
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <SummaryCard value={items.length.toString()} isLoading={isLoading} title="Exports" description="Total export attempts" />
-        <SummaryCard value={items.filter(item => item.status === 'EXPORTED').length.toString()} isLoading={isLoading} title="Departed" description="Goods exported" />
-        <SummaryCard value={items.filter(item => item.status === 'IMPORTED').length.toString()} title="Confirmed" isLoading={isLoading} description="Successful transaction" />
-        <SummaryCard value={items.filter(item => item.status === 'CANCELLED').length.toString()} title="Cancelled" isLoading={isLoading} description="Goods Returned by Recipient" />
+        <SummaryCard value={items.length.toString()} isLoading={isLoading} title="Imported" description="All Confirmed Goods" />
+        <SummaryCard value={Array.from(new Set(items.map(item => item.exporter))).length.toString()} isLoading={isLoading} title="Exporter" description="Number of Exporter" />
       </Flex>
       <Text fontSize="xl" color="#262A41" fontWeight="semibold" mb="4">
-        Export History
+        Import History
       </Text>
-      <ExportTable data={items} isLoading={isLoading} />
+      <ImportTable data={items} isLoading={isLoading} />
     </>
   );
 };

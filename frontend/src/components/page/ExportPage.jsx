@@ -6,7 +6,7 @@ import ExportTable from '../widget/ExportTable.jsx';
 import AddNewButton from '../widget/AddNewButton.jsx';
 import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
-import { exportItem, getUserTransactions, getItemDetails } from '../../contracts/contracts';
+import { exportItem, getItemDetails, getExports } from '../../contracts/contracts';
 import Cookies from 'js-cookie';
 
 const ExportPage = () => {
@@ -41,7 +41,7 @@ const ExportPage = () => {
       const account = Cookies.get("walletId");
       if (!account) throw new Error("Wallet ID is not set");
 
-      const exportedItems = await getUserTransactions(account);
+      const exportedItems = await getExports(account);
       console.log("Exported items:", exportedItems);
 
       const detailedItems = await Promise.all(
@@ -82,10 +82,19 @@ const ExportPage = () => {
   const handleNewExport = async (product, qty, value, recipient, origin, target) => {
     try {
       const account = Cookies.get("walletId");
+      console.log('Exporting ...')
       const transactionHash = await exportItem(product, qty, value, recipient, account, origin, target);
       console.log("Exported item transaction hash:", transactionHash);
       fetchExportData();
+      toaster.create({
+        title: `Item has been exported to recipient`,
+        type: 'success',
+      })
     } catch (error) {
+      toaster.create({
+        title: `Something is wrong. Please try again`,
+        type: 'error',
+      })
       console.error("Failed to export item:", error);
     }
   };

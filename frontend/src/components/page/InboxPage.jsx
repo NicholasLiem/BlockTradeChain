@@ -3,20 +3,32 @@ import { Flex, Text, Button } from '@chakra-ui/react';
 import PageHeading from '../widget/PageHeading';
 import SummaryCard from '../widget/SummaryCard';
 import InboxTable from '../widget/InboxTable';
+import isSessionValid from '../../util/isSessionValid.js';
+import { useNavigate } from 'react-router-dom';
 import { confirmItem, denyItem, getInbox } from '../../contracts/contracts';
 import { useAuth } from '../../context/AuthContext';
 
 const InboxPage = () => {
+  const navigate = useNavigate();
   const { walletId, logout } = useAuth();
   const [currentTime, setCurrentTime] = useState('');
   const [inboxItems, setInboxItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!walletId) {
-      logout();
-      return;
-    }
+    const initializePage = async () => {
+      try {
+        const status = await isSessionValid();
+        if (!status) {
+          navigate('/login');
+          return;
+        }
+      } catch (error) {
+        console.error("Error during initialization:", error);
+      }
+    };
+
+    initializePage();
   }, [walletId, logout]);
 
   const fetchInboxItems = async () => {
@@ -63,8 +75,8 @@ const InboxPage = () => {
     <>
       <PageHeading text={'Inbox'} />
       <Flex my={'2%'} gap={'1%'} justify={'space-between'} width={'100%'}>
-        <SummaryCard value='23.59' title="Clock" description="Current Time (GMT+7)" />
-        <SummaryCard value={inboxItems.length} title="Inbox" description="Pending Transactions" />
+        <SummaryCard value={inboxItems.length.toString()} isLoading={loading} title="Inbox" description="Goods ready to be imported" />
+        <SummaryCard value={Array.from(new Set(inboxItems.map(item => item.exporter))).length.toString()} isLoading={loading} title="Exporter" description="Number of Exporter" />
       </Flex>
       <Flex 
         justify="space-between" 

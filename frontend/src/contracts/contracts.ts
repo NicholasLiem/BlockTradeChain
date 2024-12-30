@@ -59,8 +59,56 @@ export async function getUserTransactions(userAddress: string) {
       toBlock: 'latest',
     });
 
+    // Combine and deduplicate events based on transaction hash
+    const allEvents = [...exportedEvents];
+    const uniqueEvents = [
+      ...new Map(
+        allEvents
+          .filter((event): event is EventLog => typeof event !== 'string')
+          .map((event) => [event.returnValues.transactionHash, event])
+      ).values(),
+    ];
+
+    // Map each event to an object
+    const allTransactions = uniqueEvents
+      .filter((event): event is EventLog => typeof event !== 'string')
+      .map((event: EventLog) => {
+        const { transactionHash, exporter, recipient, product, qty, value } =
+          event.returnValues;
+
+        return {
+          transactionHash,
+          exporter,
+          recipient,
+          product: product || "Unknown",
+          qty: qty ? Number(qty) : 0,
+          value: value ? Number(value) : 0,
+          status: "EXPORTED", // Default status for newly exported items
+        };
+      });
+
+    // Remove duplicates by using the transactionHash as a unique key
+    const uniqueTransactions = Array.from(
+      new Map(allTransactions.map((item) => [item.transactionHash, item])).values()
+    );
+
+    return uniqueTransactions;
+  } catch (error) {
+    console.error("Error fetching user transactions:", error);
+    throw new Error("Failed to fetch user transactions.");
+  }
+}
+
+export async function getExports(userAddress: string) {
+  try {
+    const exportedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
+      filter: { exporter: userAddress },
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+
     const receivedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
-      filter: { recipient: userAddress },
+      filter: { recipient: userAddress},
       fromBlock: 0,
       toBlock: 'latest',
     });
@@ -94,6 +142,51 @@ export async function getUserTransactions(userAddress: string) {
       });
 
     // Remove duplicates by using the transactionHash as a unique key
+    const uniqueTransactions = Array.from(
+      new Map(allTransactions.map((item) => [item.transactionHash, item])).values()
+    );
+
+    return uniqueTransactions;
+  } catch (error) {
+    console.error("Error fetching user transactions:", error);
+    throw new Error("Failed to fetch user transactions.");
+  }
+}
+
+export async function getImports(userAddress: string) {
+  try {
+    const receivedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
+      filter: { recipient: userAddress },
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+
+    const allEvents = [...receivedEvents];
+    const uniqueEvents = [
+      ...new Map(
+        allEvents
+          .filter((event): event is EventLog => typeof event !== 'string')
+          .map((event) => [event.returnValues.transactionHash, event])
+      ).values(),
+    ];
+
+    const allTransactions = uniqueEvents
+      .filter((event): event is EventLog => typeof event !== 'string')
+      .map((event: EventLog) => {
+        const { transactionHash, exporter, recipient, product, qty, value } =
+          event.returnValues;
+
+        return {
+          transactionHash,
+          exporter,
+          recipient,
+          product: product || "Unknown",
+          qty: qty ? Number(qty) : 0,
+          value: value ? Number(value) : 0,
+          status: "EXPORTED",
+        };
+      });
+
     const uniqueTransactions = Array.from(
       new Map(allTransactions.map((item) => [item.transactionHash, item])).values()
     );
