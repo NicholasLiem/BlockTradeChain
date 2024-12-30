@@ -8,6 +8,7 @@ import isSessionValid from '../../util/isSessionValid.js';
 import { useNavigate } from 'react-router-dom';
 import { exportItem, getItemDetails, getExports } from '../../contracts/contracts';
 import Cookies from 'js-cookie';
+import { Toaster, toaster } from "@/components/ui/toaster"
 
 const ExportPage = () => {
   const navigate = useNavigate();
@@ -86,11 +87,13 @@ const ExportPage = () => {
       const transactionHash = await exportItem(product, qty, value, recipient, account, origin, target);
       console.log("Exported item transaction hash:", transactionHash);
       fetchExportData();
+      console.log('fnwqjkhfkqew')
       toaster.create({
         title: `Item has been exported to recipient`,
         type: 'success',
       })
     } catch (error) {
+      console.log('wskqflwqkfkl')
       toaster.create({
         title: `Something is wrong. Please try again`,
         type: 'error',
@@ -101,6 +104,7 @@ const ExportPage = () => {
 
   return (
     <>
+      <Toaster/>
       <Flex justify={'space-between'} width={'100%'} align={'center'}>
         <PageHeading text={'Export'} />
         <AddNewButton onNewExport={handleNewExport} />

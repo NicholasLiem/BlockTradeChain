@@ -5,7 +5,6 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@/components/ui/pagination"
-import TableDetailButton from "./TableDetailButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 
@@ -25,11 +24,9 @@ const HistoryTable = ({data, isLoading}) => {
       <Table.Root size="sm" variant="outline" borderRadius={'lg'}>
         <Table.Header backgroundColor={'#262A41'}>
           <Table.Row>
-            <Table.ColumnHeader>Product</Table.ColumnHeader>
-            <Table.ColumnHeader>Qty</Table.ColumnHeader>
             <Table.ColumnHeader>Exporter</Table.ColumnHeader>
             <Table.ColumnHeader>Importer</Table.ColumnHeader>
-            <Table.ColumnHeader>Detail</Table.ColumnHeader>
+            <Table.ColumnHeader>Status</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -45,29 +42,12 @@ const HistoryTable = ({data, isLoading}) => {
               <Table.Cell>
                 <Skeleton flex="1" height="5" variant="pulse" />
               </Table.Cell>
-              <Table.Cell>
-                <Skeleton flex="1" height="5" variant="pulse" />
-              </Table.Cell>
-              <Table.Cell>
-                <Skeleton flex="1" height="5" variant="pulse" />
-              </Table.Cell>
             </Table.Row> : 
             visibleData.map((item) => (
             <Table.Row key={item.id} color={'black'}>
-              <Table.Cell >{item.product}</Table.Cell>
-              <Table.Cell>{item.qty}</Table.Cell>
               <Table.Cell >{item.exporter}</Table.Cell>
               <Table.Cell>{item.recipient}</Table.Cell>
-              <Table.Cell><TableDetailButton
-                    value={item.value}
-                    itemid={item.id}
-                    exporttime={item.exportedtime}
-                    importtime={item.confirmedtime}
-                    origin={item.origin}
-                    target={item.target}
-                    rate={item.exchangeRate}
-                    ratetime={item.exchangeRateTimeStamp}
-                  /></Table.Cell>
+              <Table.Cell >{item.status}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

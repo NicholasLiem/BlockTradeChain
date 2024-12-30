@@ -5,7 +5,6 @@ const SummaryCard = ({ value, title, description, isLoading }) => {
   return (
     <Flex
       width="100%"
-      maxWidth="50vw"
       bg="white"
       borderRadius="xl"
       FlexShadow="md"

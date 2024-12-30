@@ -102,7 +102,7 @@ const HomePage = () => {
           </Button>
         </Flex>
         <Text color={'gray.500'}>Wallet ID: {Cookies.get('walletId')}</Text>
-        <Flex direction={'column'} align={'center'} justify={'center'} height={'100%'}>
+        <Flex direction={'column'} align={'center'} justify={'center'} height={'100%'} width={'100%'}>
         <Flex mt="2%" gap="2%" justify="center" wrap="wrap" width="100%">
           <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
             <SummaryCard value={items.filter(item => item.exportto.toString().toLowerCase() == Cookies.get('walletId') && item.status == "EXPORTED").length.toString()} isLoading={isLoading} title="Inbox" description="Total goods in Inbox" />

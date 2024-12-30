@@ -26,7 +26,7 @@ const LoginPage = () => {
     const handleLoginClick = async () => {
         try {
             handleMetamask()
-            await web3.eth.personal.unlockAccount(walletId, password, 5);
+            await web3.eth.personal.unlockAccount(walletId, password, 600);
             Cookies.set('walletId', walletId);
             Cookies.set('password', password);
 

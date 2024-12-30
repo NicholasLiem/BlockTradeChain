@@ -14,6 +14,7 @@ export async function exportItem(
   console.log("Exporting item:", { product, qty, value, recipient, account, origin, target });
 
   const gasPrice = (await web3.eth.getGasPrice()).toString();
+  
   const txReceipt = await supplyChainContract.methods
     .exportItem(product, qty, value, recipient, origin, target)
     .send({ from: account, gasPrice });
