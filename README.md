@@ -22,5 +22,10 @@ Here's a quick tutorial and explaination on how to deploy smart contracts into p
 Here's a quick explanation on how to integrate and deploy the oracle into the private chain and smart contract. <br>
 [How to integrate and deploy oracle to private chain and smart contract (Click Me!)](./oracle/README.md)
 
+## Project Report
+Here's the link for the project report
+[Project Report Link](./docs/BlockTradeChain_Report.pdf)
+
 ## Video Snippet
-<!-- Video Link -->
+Here's the link for the video snipper
+[Video Snippet Link]()
