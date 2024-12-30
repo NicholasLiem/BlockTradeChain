@@ -24,9 +24,9 @@ const HistoryTable = ({data, isLoading}) => {
       <Table.Root size="sm" variant="outline" borderRadius={'lg'}>
         <Table.Header backgroundColor={'#262A41'}>
           <Table.Row>
+            <Table.ColumnHeader>Transaction Hash</Table.ColumnHeader>
             <Table.ColumnHeader>Exporter</Table.ColumnHeader>
             <Table.ColumnHeader>Importer</Table.ColumnHeader>
-            <Table.ColumnHeader>Status</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -45,9 +45,9 @@ const HistoryTable = ({data, isLoading}) => {
             </Table.Row> : 
             visibleData.map((item) => (
             <Table.Row key={item.id} color={'black'}>
+              <Table.Cell >{item.transactionHash}</Table.Cell>
               <Table.Cell >{item.exporter}</Table.Cell>
               <Table.Cell>{item.recipient}</Table.Cell>
-              <Table.Cell >{item.status}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

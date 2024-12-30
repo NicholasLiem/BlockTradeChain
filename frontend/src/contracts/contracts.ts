@@ -60,8 +60,14 @@ export async function getUserTransactions(userAddress: string) {
       toBlock: 'latest',
     });
 
+    const receivedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
+      filter: { recipient: userAddress},
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+
     // Combine and deduplicate events based on transaction hash
-    const allEvents = [...exportedEvents];
+    const allEvents = [...exportedEvents, ...receivedEvents];
     const uniqueEvents = [
       ...new Map(
         allEvents
@@ -108,14 +114,8 @@ export async function getExports(userAddress: string) {
       toBlock: 'latest',
     });
 
-    const receivedEvents = await supplyChainContract.getPastEvents('ItemExported' as any, {
-      filter: { recipient: userAddress},
-      fromBlock: 0,
-      toBlock: 'latest',
-    });
-
     // Combine and deduplicate events based on transaction hash
-    const allEvents = [...exportedEvents, ...receivedEvents];
+    const allEvents = [...exportedEvents];
     const uniqueEvents = [
       ...new Map(
         allEvents
@@ -209,6 +209,7 @@ export async function getAllTransactions() {
     const allTransactions = events
       .filter((event): event is EventLog => typeof event !== 'string')
       .map((event: EventLog) => {
+        console.log(event.returnValues)
         const itemHash = event.returnValues.transactionHash;
 
         return {

@@ -31,4 +31,4 @@ Here's the link for the project report <br>
 
 ## Video Snippet
 Here's the link for the video snippet <br>
-[Video Snippet Link]()
+[Video Snippet Link](https://youtu.be/uNvwT2ytmos)

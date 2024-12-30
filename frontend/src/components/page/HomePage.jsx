@@ -110,9 +110,9 @@ const HomePage = () => {
           </Flex>
 
           <Flex direction="row" width="100%" gap="2%" mb="4" justify="center">
-            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'EXPORTED').length.toString()} isLoading={isLoading} title="Export Departed" description="Confirmed Imported Goods" />
-            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'IMPORTED').length.toString()} isLoading={isLoading} title="Export Confirmed" description="Goods exported" />
-            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'CANCELLED').length.toString()} isLoading={isLoading} title="Export Cancelled" description="Successful transaction" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'EXPORTED').length.toString()} isLoading={isLoading} title="Export Departed" description="Number of exports departed" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'IMPORTED').length.toString()} isLoading={isLoading} title="Export Confirmed" description="Number of sucessful exports" />
+            <SummaryCard value={items.filter(item => item.exporter.toString().toLowerCase() == Cookies.get('walletId') && item.status == 'CANCELLED').length.toString()} isLoading={isLoading} title="Export Cancelled" description="Number of cancelled exports" />
           </Flex>
         </Flex>
       </Flex>
