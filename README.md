@@ -6,6 +6,9 @@ The traditional management system for the supply chain in importing goods still 
 2. It is recommended to use at least 16GB RAM. <br>
 [Geth Hardware System Requirements](https://geth.ethereum.org/docs/getting-started/hardware-requirements)
 
+## Important Notes
+You should run the private chain, and then deploy the contract first before intializing the frontend and oracle service, this due to environment dependency these two service need to have from the private chain and the contract address.
+
 ## How to Run Private Chain
 Here's a quick tutorial how to run the private chain. <br>
 [How to run private chain tutorial (Click Me!)](./blockchain/README.md)
