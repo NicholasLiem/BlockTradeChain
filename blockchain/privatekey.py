@@ -6,27 +6,7 @@ import binascii
 import json
 
 # Input JSON data
-json_data = '''{
-    "address":"e19f6f94a5f9d065243629b6593ad0ed82899944",
-    "crypto":{
-        "cipher":"aes-128-ctr",
-        "ciphertext":"8b94a5c626d52be592b0003b75a3de4813bfad8243febc0db49529bc7a958fb8",
-        "cipherparams":{
-            "iv":"4a5143c06faf52ef35ef2991e7c24571"
-        },
-        "kdf":"scrypt",
-        "kdfparams":{
-            "dklen":32,
-            "n":262144,
-            "p":1,
-            "r":8,
-            "salt":"f658e3b4a0e56e66b9f065e6b7ca96db4f0811e1fdeac5f72970410e827f6c3f"
-        },
-        "mac":"3110d0e195d0fa0d44723403f186daf6f26dfdcc01e069e7a04c253f7573baa6"
-    },
-    "id":"bb1c29b9-2a45-43c0-8191-47a6ebf73460",
-    "version":3
-}'''
+json_data = '''{"address":"2d349a29db6165ca2767fc3fa753e04716bdbb46","crypto":{"cipher":"aes-128-ctr","ciphertext":"5d8231ac34852c84d977ce14f4b9d6353088cb53f0656d419c0fad5418f4a748","cipherparams":{"iv":"a6f2a6e68c23b7b3e5e637218fbc3888"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"6b8cdfad07ee0d67686d20f2b3cf546557d0647b56f61048d612162146df6fe4"},"mac":"fb1d481f95c8fd8c16797d8c4e8780b59766125fdde29c0e45e88426d4bd84c1"},"id":"0ab7f135-29b8-4b8a-b6ed-4d8b7a78d936","version":3}'''
 
 # Parse the JSON data
 data = json.loads(json_data)
